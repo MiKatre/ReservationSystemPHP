@@ -8,11 +8,12 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\OrderRepository")
+ * @ORM\Table(name="`order`")
  */
 class Order
 {
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Ticket", mappedBy="order")
+     * @ORM\OneToMany(targetEntity="App\Entity\Ticket", mappedBy="orderRelation", cascade={"persist"})
      */
     private $tickets;
 
@@ -42,6 +43,11 @@ class Order
      * @ORM\Column(type="string", length=255)
      */
     private $reservationCode;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $date;
 
 
     public function __construct()
@@ -129,6 +135,18 @@ class Order
                 $ticket->setOrderRelation(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDate(): ?\DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    public function setDate(\DateTimeInterface $date): self
+    {
+        $this->date = $date;
 
         return $this;
     }

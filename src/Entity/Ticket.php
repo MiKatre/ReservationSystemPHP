@@ -14,7 +14,7 @@ class Ticket
      * @ORM\ManyToOne(targetEntity="App\Entity\Order", inversedBy="tickets")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $order;
+    private $orderRelation;
 
     /**
      * @ORM\Id()
@@ -113,14 +113,14 @@ class Ticket
         return $this;
     }
 
-    public function getOrder(): ?Order
+    public function getOrderRelation(): ?Order
     {
-        return $this->order;
+        return $this->orderRelation;
     }
 
-    public function setOrder(?Order $order): self
+    public function setOrderRelation(?Order $orderRelation): self
     {
-        $this->order = $order;
+        $this->orderRelation = $orderRelation;
 
         return $this;
     }

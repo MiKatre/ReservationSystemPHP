@@ -33,12 +33,14 @@ class OrderController extends AbstractController
 //        $price = new Price();
 //        $price->setName('kid');
 //        $price->setPrice(300);
+        $date = date('m/d/Y h:i:s a', time());
 
         $order = new Order();
         $order->setFirstName('Pauline');
         $order->setLastName('Alg');
         $order->setEmail('pauline.algebra@organisation.org');
         $order->setReservationCode('X06h71k');
+        $order->setDate(new \DateTime("10-10-1990"));
 
         $ticket = new Ticket();
         $ticket->setFirstName('Pauline');
@@ -56,7 +58,7 @@ class OrderController extends AbstractController
 
         $entityManager->flush();
 
-        return new Response('Nouvelle commande créée au nom de ' . $order->getFirstName() . ' ' .  $order->getLastName());
+        return $this->render('commande/homepage.html.twig', array('order' => $order));
     }
 
     /**
