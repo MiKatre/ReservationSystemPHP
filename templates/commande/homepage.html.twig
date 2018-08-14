@@ -4,3 +4,11 @@
     <h1>Hello {{ order.firstName }}</h1>
     <div id="react-form"></div>
 {% endblock %}
+
+
+{% block javascripts %}
+
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('/projet4/public/build/js/app.js') }}"></script>
+
+{% endblock %}

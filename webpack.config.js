@@ -17,7 +17,7 @@ Encore
      * Each entry will result in one JavaScript file (e.g. app.js)
      * and one CSS file (e.g. app.css) if you JavaScript imports CSS.
      */
-    .addEntry('app', './assets/js/app.js')
+    .addEntry('js/app', ['babel-polyfill', './assets/js/app.js'])
     //.addEntry('page1', './assets/js/page1.js')
     //.addEntry('page2', './assets/js/page2.js')
 
@@ -36,8 +36,8 @@ Encore
 
     .configureBabel(function (babelConfig) {
         babelConfig.presets.push('env')
-        .enableReactPreset()
     })
+    .enableReactPreset()
 
 
 
