@@ -1,15 +1,21 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import {Container} from 'reactstrap'
+
+import Form from './components/Form'
+import Breadcrumb from './components/Breadcrumb'
+
 
 class App extends React.Component {
     render(){
         return(
-            <div>
-                <p>I am the form </p>
-            </div>
+            <Container>
+                <Breadcrumb />
+                <Form />
+            </Container>
         )
     }
 }
 
 ReactDOM.render(<App/>,
-    document.getElementById('react-form'));
+    document.getElementById('form'));

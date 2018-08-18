@@ -62,6 +62,13 @@ class OrderController extends AbstractController
     }
 
     /**
+     * @Route("/form")
+     */
+    public function showForm(){
+        return $this->render('commande/form.html.twig');
+    }
+
+    /**
      * @Route("/commande/{id}")
      */
     public function showOrder($id){

@@ -3,10 +3,32 @@
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}Musée du Louvre{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
+        {% block stylesheets %}
+            <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}">
+            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        {% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
+        {% block body %}
+            <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white  shadow-sm">
+                <h5 class="my-0 mr-md-auto font-weight-normal">Musée du Louvre </h5>
+                <a href="form" class="btn btn-link text-primary">Billetterie &#8594;</a>
+            </div>
+        {% endblock %}
+
+        {% block footer %}
+        <footer class="my-5 pt-5 text-muted text-center text-small">
+            <p class="mb-1">© 2017-2018 Musée du Louvre</p>
+            <ul class="list-inline">
+                <li class="list-inline-item"><a href="#">Vie privée</a></li>
+                <li class="list-inline-item"><a href="#">Conditions d'utilisation</a></li>
+                <li class="list-inline-item"><a href="#">GPRD</a></li>
+            </ul>
+        </footer>
+        {% endblock %}
+
+        {% block javascripts %}
+            <script type="text/javascript" src="{{ asset('/projet4/public/build/js/app.js') }}"></script>
+        {% endblock %}
     </body>
 </html>
