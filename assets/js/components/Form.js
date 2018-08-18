@@ -3,6 +3,12 @@ import React from 'react'
 import { Container, Row, Form as BootstrapForm, Col, Input, Label  } from 'reactstrap'
 
 class Form extends React.Component {
+    constructor(props){
+        super(props)
+        this.state = {
+
+        }
+    }
     render() {
         return (
             <Container>
@@ -36,6 +42,10 @@ const OrderForm = () => (
                     <Input type="text" name="lastname" id="lastname" placeholder="Nom" />
                 </Col>
             </Row>
+            <div className="mb-3">
+                <Label for="email">E-mail</Label>
+                <Input type="email" name="email" id="email" placeholder="Email" />
+            </div>
         </BootstrapForm>
     </div>
 );
