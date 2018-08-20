@@ -1,6 +1,10 @@
 import React from 'react'
 
 import { Container, Row, Form as BootstrapForm, Col, Input, Label  } from 'reactstrap'
+import DayPickerInput from 'react-day-picker/DayPickerInput'
+
+import  MomentLocaleUtils, { formatDate, parseDate } from 'react-day-picker/moment'
+import 'moment/locale/it'
 
 class Form extends React.Component {
     constructor(props){
@@ -50,6 +54,15 @@ const OrderForm = () => (
                 <Label for="date">Date</Label>
                 <Input type="date" name="date" id="date" placeholder="JJ/MM/AAAA" />
             </div>
+            <DayPickerInput
+                formatDate={formatDate}
+                parseDate={parseDate}
+                format="LL"
+                dayPickerProps={{
+                    locale: 'it',
+                    localeUtils: MomentLocaleUtils,
+                }}
+            />
         </BootstrapForm>
     </div>
 );
