@@ -4,7 +4,7 @@ import { Container, Row, Form as BootstrapForm, Col, Input, Label  } from 'react
 import DayPickerInput from 'react-day-picker/DayPickerInput'
 
 import  MomentLocaleUtils, { formatDate, parseDate } from 'react-day-picker/moment'
-import 'moment/locale/it'
+import 'moment/locale/fr'
 
 class Form extends React.Component {
     constructor(props){
@@ -59,7 +59,7 @@ const OrderForm = () => (
                 parseDate={parseDate}
                 format="LL"
                 dayPickerProps={{
-                    locale: 'it',
+                    locale: 'fr',
                     localeUtils: MomentLocaleUtils,
                 }}
             />
