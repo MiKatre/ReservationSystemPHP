@@ -6,6 +6,7 @@ import Form from './components/Form'
 import Breadcrumb from './components/Breadcrumb'
 
 import 'react-day-picker/lib/style.css'
+import '../css/app.css'
 
 
 class App extends React.Component {

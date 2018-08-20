@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Container, Row, Form as BootstrapForm, Col, Input, Label  } from 'reactstrap'
+import { Container, Row, Form as BootstrapForm, Col, Input, Label, Button  } from 'reactstrap'
 import DayPickerInput from 'react-day-picker/DayPickerInput'
 
 import  MomentLocaleUtils, { formatDate, parseDate } from 'react-day-picker/moment'
@@ -64,24 +64,26 @@ const OrderForm = () => (
                 <Input type="email" name="email" id="email" placeholder="Email" />
             </div>
             <div className="mb-3">
-                <Label for="date">Date</Label>
-                <Input type="date" name="date" id="date" placeholder="JJ/MM/AAAA" />
+                <label>Date</label> <br/>
+                <DayPickerInput
+                    formatDate={formatDate}
+                    parseDate={parseDate}
+                    format="LL"
+                    placeholder={`${formatDate(new Date(), 'LL', 'fr')}`}
+                    onDayChange={console.log('hello')}
+                    dayPickerProps={{
+                        locale: 'fr',
+                        localeUtils: MomentLocaleUtils,
+                        modifiers:{
+                            disabled: [isHoliday, past, sundays ],
+                        },
+                        todayButton: "Aujourd'hui",
+                    }}
+                />
             </div>
-            <DayPickerInput
-                formatDate={formatDate}
-                parseDate={parseDate}
-                format="LL"
-                placeholder={`${formatDate(new Date(), 'LL', 'fr')}`}
-                onDayChange={console.log('hello')}
-                dayPickerProps={{
-                    locale: 'fr',
-                    localeUtils: MomentLocaleUtils,
-                    modifiers:{
-                        disabled: [isHoliday, past, sundays ],
-                    },
-                    todayButton: "Aujourd'hui",
-                }}
-            />
+            <div className="text-center my-5">
+                <Button color="link"> Ajouter tickets &#8594;</Button>
+            </div>
         </BootstrapForm>
     </div>
 );
