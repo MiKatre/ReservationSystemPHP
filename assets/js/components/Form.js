@@ -46,6 +46,10 @@ const OrderForm = () => (
                 <Label for="email">E-mail</Label>
                 <Input type="email" name="email" id="email" placeholder="Email" />
             </div>
+            <div className="mb-3">
+                <Label for="date">Date</Label>
+                <Input type="date" name="date" id="date" placeholder="JJ/MM/AAAA" />
+            </div>
         </BootstrapForm>
     </div>
 );
