@@ -5,6 +5,8 @@ import {Container} from 'reactstrap'
 import Form from './components/Form'
 import Breadcrumb from './components/Breadcrumb'
 
+import 'react-day-picker/lib/style.css'
+
 
 class App extends React.Component {
     render(){
