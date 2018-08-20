@@ -29,6 +29,19 @@ class Form extends React.Component {
     }
 }
 
+const past = {
+    before: new Date(),
+}
+
+const sundays = {
+    daysOfWeek: [0,2],
+}
+
+// 1er mai, 1er novembre et 25 décembre.
+const isHoliday = (day) => {
+    return day.getDate() === 25 && day.getMonth() === 11 || day.getDate() === 1 && day.getMonth() === 10 || day.getDate() === 1 && day.getMonth() === 4;
+}
+
 const OrderForm = () => (
     <div>
         <h4 className="mb-3">
@@ -58,9 +71,15 @@ const OrderForm = () => (
                 formatDate={formatDate}
                 parseDate={parseDate}
                 format="LL"
+                placeholder={`${formatDate(new Date(), 'LL', 'fr')}`}
+                onDayChange={console.log('hello')}
                 dayPickerProps={{
                     locale: 'fr',
                     localeUtils: MomentLocaleUtils,
+                    modifiers:{
+                        disabled: [isHoliday, past, sundays ],
+                    },
+                    todayButton: "Aujourd'hui",
                 }}
             />
         </BootstrapForm>
