@@ -3,8 +3,10 @@ import React from 'react'
 import FormOne from './FormOne'
 import FormTwo from './FormTwo'
 import FormThree from './FormThree'
+import Cart from './Cart'
 
 import {isEmailValid} from '../helpers'
+import {Container, Row, Col} from 'reactstrap'
 
 export default class FormContainer extends React.Component {
   constructor(props) {
@@ -60,14 +62,28 @@ export default class FormContainer extends React.Component {
 	}
 
   render() {
-    if (this.state.isFormThreeCompleted)    return <ThankYou {...this.state} /> 
-    else if (this.state.isFormTwoCompleted) return <FormThree {...this.state} />
-    else if (this.state.isFormOneCompleted) return <FormTwo {...this.state} />
-    return  <FormOne
+    let form
+    if (this.state.isFormThreeCompleted)    form = <ThankYou {...this.state} /> 
+    else if (this.state.isFormTwoCompleted) form = <FormThree {...this.state} />
+    else if (this.state.isFormOneCompleted) form = <FormTwo {...this.state} />
+    form =  <FormOne
               handleSubmit={this.handleSubmit} 
 							handleInputChange={this.handleInputChange} 
 							handleDayChange={this.handleDayChange} 
 							{...this.state} 
             /> 
+
+    return (
+      <Container>
+        <Row>
+          <Col md={{ size: 4, order: 2 }} className="mb-4">
+            <Cart />
+          </Col>
+          <Col md={{ size: 8, order: 1 }}>
+            {form}
+          </Col>
+        </Row>
+      </Container>
+    )
   }
 } 
