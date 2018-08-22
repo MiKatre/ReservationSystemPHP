@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import {Container} from 'reactstrap'
 
-import Form from './components/Form'
+import FormContainer from './components/FormContainer'
 import Breadcrumb from './components/Breadcrumb'
 
 import 'react-day-picker/lib/style.css'
@@ -14,7 +14,7 @@ class App extends React.Component {
         return(
             <Container>
                 <Breadcrumb />
-                <Form />
+                <FormContainer />
             </Container>
         )
     }
