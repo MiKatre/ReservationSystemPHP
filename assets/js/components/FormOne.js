@@ -1,5 +1,5 @@
 import React from 'react'
-import {isEmailValid} from '../helpers'
+
 
 import { Container, Row, Form as BootstrapForm, Col, Input, Label, Button, FormFeedback } from 'reactstrap'
 import DayPickerInput from 'react-day-picker/DayPickerInput'
@@ -7,74 +7,24 @@ import MomentLocaleUtils, { formatDate, parseDate } from 'react-day-picker/momen
 
 import 'moment/locale/fr'
 
-class FormOne extends React.Component {
-	constructor(props) {
-		super(props)
-		this.state = {
-			firstName: '',
-			lastName: '',
-			email: '',
-			selectedDay: undefined,
-			isDisabled: false,
-			isFormCompleted: false,
-		}
-		this.handleInputChange = this.handleInputChange.bind(this);
-		this.handleSubmit = this.handleSubmit.bind(this);
-		this.handleDayChange = this.handleDayChange.bind(this);
-	}
-
-	handleSubmit(event) {
-		event.preventDefault();
-		alert('hihihi');
-	}
-
-	handleInputChange(event) {
-		const target = event.target;
-		const name = target.name;
-		const value = target.type === 'checkbox' ? target.checked : target.value;
-
-		const error = this.validateInput(name, value)
-
-		this.setState({
-			[name]: value,
-			[`${name}Error`]: error,
-		})
-	}
-
-	validateInput(name, value) {
-		// console.log(name.toLowerCase().includes('name'))
-		if (name === 'email' && !isEmailValid(value)) return 'Adresse email invalide';
-		if (name.toLowerCase().includes('name') && value.length < 2) return `Entrez un nom valide`;
-		return false;
-	}
-
-	handleDayChange(selectedDay, modifiers) {
-		console.log(modifiers)
-		this.setState({
-			selectedDay: modifiers.disabled === true ? undefined : selectedDay,
-			isDisabled: modifiers.disabled === true
-		})
-	}
-
-	render() {
-		return (
-			<Container>
-				<Row>
-					<Col md={{ size: 4, order: 2 }} className="mb-4">
-						<Cart />
-					</Col>
-					<Col md={{ size: 8, order: 1 }}>
-						<OrderForm 
-							handleSubmit={this.handleSubmit} 
-							handleInputChange={this.handleInputChange} 
-							handleDayChange={this.handleDayChange} 
-							{...this.state} 
-						/>
-					</Col>
-				</Row>
-			</Container>
-		)
-	}
+const FormOne = props => {
+	return (
+		<Container>
+			<Row>
+				<Col md={{ size: 4, order: 2 }} className="mb-4">
+					<Cart />
+				</Col>
+				<Col md={{ size: 8, order: 1 }}>
+					<OrderForm 
+						handleSubmit={props.handleSubmit} 
+						handleInputChange={props.handleInputChange} 
+						handleDayChange={props.handleDayChange} 
+						{...props} 
+					/>
+				</Col>
+			</Row>
+		</Container>
+	)
 }
 
 const past = {
