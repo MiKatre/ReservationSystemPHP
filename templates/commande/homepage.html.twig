@@ -5,6 +5,10 @@
     <link rel="preload" href="form" />
 {% endblock %}
 
+{% block nav_button %}
+    <a href="form" class="btn btn-link text-primary"> Billetterie &#8594; </a>
+{% endblock %}
+
 {% block body %}
     {{ parent() }}
     <div class="header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
@@ -15,8 +19,6 @@
     <div class="text-center">
         <a href="form" class="btn btn-link mx-auto">Commander &#8594;</a>
     </div>
-
-
 {% endblock %}
 
 

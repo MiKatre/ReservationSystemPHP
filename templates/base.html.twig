@@ -6,15 +6,17 @@
         {% block stylesheets %}
             <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}">
             <link rel="stylesheet" type="text/css" href="{{ asset('/projet4/public/build/js/app.css') }}">
+            <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
             <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
         {% endblock %}
     </head>
     <body>
+        <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white  shadow-sm">
+            <h5 class="my-0 mr-md-auto font-weight-normal">Musée du Louvre </h5>
+            {% block nav_button %}  {% endblock %}
+        </div>
         {% block body %}
-            <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white  shadow-sm">
-                <h5 class="my-0 mr-md-auto font-weight-normal">Musée du Louvre </h5>
-                <a href="form" class="btn btn-link text-primary">Billetterie &#8594;</a>
-            </div>
+
         {% endblock %}
 
         {% block footer %}

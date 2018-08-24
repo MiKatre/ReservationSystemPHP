@@ -1,5 +1,9 @@
 {% extends 'base.html.twig' %}
 
+{% block nav_button %}
+    <a href="{{ path('site_homepage') }}" class="btn btn-link text-primary"> &#8592; Accueil </a>
+{% endblock %}
+
 {% block body %}
 <div id='form'></div>
 {% endblock %}
