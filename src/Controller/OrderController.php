@@ -20,7 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class OrderController extends AbstractController
 {
     /**
-     * @Route("/")
+     * @Route("/", name="site_homepage")
      */
     public function homepage() {
 
@@ -62,7 +62,7 @@ class OrderController extends AbstractController
     }
 
     /**
-     * @Route("/form")
+     * @Route("/form", name="site_form")
      */
     public function showForm(){
         return $this->render('commande/form.html.twig');
