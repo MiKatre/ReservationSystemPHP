@@ -7,6 +7,7 @@ import Cart from './Cart'
 import Breadcrumb from './Breadcrumb'
 
 import {isEmailValid} from '../helpers'
+import {fetchSessionData, setSessionData} from '../api'
 import {Container, Row, Col, Button} from 'reactstrap'
 
 export default class FormContainer extends React.Component {
@@ -35,7 +36,25 @@ export default class FormContainer extends React.Component {
   }
 
   componentDidUpdate(){
-    console.log(this.state)
+    // this.getSessionData()
+  }
+
+  getSessionData = async () => {
+    const data = await fetchSessionData()
+    this.setState({
+      ...data
+    })
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+    // alert('hihihi');
+    // Do some ajax with the server
+    // then show the error 
+    // or 
+    this.setState({ isFormOneCompleted: true })
+    // Transition form with a nice animation
+    // setSessionData()
   }
 
   showForm(n) {
@@ -52,15 +71,6 @@ export default class FormContainer extends React.Component {
     }
   }
 
-	handleSubmit(event) {
-		event.preventDefault();
-    // alert('hihihi');
-    // Do some ajax with the server
-    // then show the error 
-    // or 
-    this.setState({ isFormOneCompleted: true })
-    // Transition form with a nice animation
-	}
 
 	handleInputChange(event) {
 		const target = event.target;
