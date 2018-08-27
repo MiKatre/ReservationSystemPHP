@@ -24,6 +24,7 @@
     "react-day-picker": "^7.1.10",
     "react-dom": "^16.4.2",
     "react-pose": "^3.0.2",
+    "react-stripe-elements": "^2.0.1",
     "reactstrap": "^6.3.1"
   }
 }

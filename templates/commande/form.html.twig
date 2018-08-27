@@ -7,3 +7,9 @@
 {% block body %}
 <div id='form'></div>
 {% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://js.stripe.com/v3/"></script>
+{% endblock %}
