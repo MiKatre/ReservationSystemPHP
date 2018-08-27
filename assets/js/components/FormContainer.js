@@ -4,9 +4,10 @@ import FormOne from './FormOne'
 import FormTwo from './FormTwo'
 import FormThree from './FormThree'
 import Cart from './Cart'
+import Breadcrumb from './Breadcrumb'
 
 import {isEmailValid} from '../helpers'
-import {Container, Row, Col} from 'reactstrap'
+import {Container, Row, Col, Button} from 'reactstrap'
 
 export default class FormContainer extends React.Component {
   constructor(props) {
@@ -26,11 +27,39 @@ export default class FormContainer extends React.Component {
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleDayChange = this.handleDayChange.bind(this);
+    this.handleTicketAdd = this.handleTicketAdd.bind(this);
+    this.handleRemoveTicket = this.handleRemoveTicket.bind(this);
+
+    this.handleSubmitFormTwo = this.handleSubmitFormTwo.bind(this);
+    this.showForm = this.showForm.bind(this);
+  }
+
+  componentDidUpdate(){
+    console.log(this.state)
+  }
+
+  showForm(n) {
+    if (n === 3) {
+      this.setState({isFormThreeCompleted: false})
+    } else if(n === 2) {
+      this.setState({isFormTwoCompleted: false})
+    } else {
+      this.setState({
+        isFormOneCompleted: false,
+        isFormThreeCompleted: false,
+        isFormTwoCompleted: false,
+      })  
+    }
   }
 
 	handleSubmit(event) {
 		event.preventDefault();
-		alert('hihihi');
+    // alert('hihihi');
+    // Do some ajax with the server
+    // then show the error 
+    // or 
+    this.setState({ isFormOneCompleted: true })
+    // Transition form with a nice animation
 	}
 
 	handleInputChange(event) {
@@ -61,29 +90,70 @@ export default class FormContainer extends React.Component {
 		})
 	}
 
+  // FORM 2
+
+  handleSubmitFormTwo(){
+    this.setState({ 
+      isFormTwoCompleted: true 
+    })
+  }
+
+  handleTicketAdd(ticket) {
+    this.setState({
+      tickets: [...this.state.tickets, ticket],
+    })
+  }
+
+  handleRemoveTicket(id){
+    let {tickets} = this.state
+    const index = tickets.findIndex(i => i.id === id)
+    if (index > -1) {
+      tickets.splice(index, 1)
+      console.log(tickets)
+      this.setState({tickets: tickets})
+    }
+  }
+
   render() {
     let form
-    if (this.state.isFormThreeCompleted)    form = <ThankYou {...this.state} /> 
-    else if (this.state.isFormTwoCompleted) form = <FormThree {...this.state} />
-    else if (this.state.isFormOneCompleted) form = <FormTwo {...this.state} />
-    form =  <FormOne
+    let show
+    if (this.state.isFormThreeCompleted) {
+      form = <ThankYou {...this.state} /> 
+    }  else if (this.state.isFormTwoCompleted) {
+      form = <FormThree {...this.state} />
+      show = 3
+    } else if (this.state.isFormOneCompleted) {
+      form = <FormTwo {...this.state} handleTicketAdd={this.handleTicketAdd}/>
+      show = 2
+    } else {
+      form =  <FormOne
               handleSubmit={this.handleSubmit} 
 							handleInputChange={this.handleInputChange} 
 							handleDayChange={this.handleDayChange} 
 							{...this.state} 
             /> 
+      show = 1
+    }
 
     return (
-      <Container>
-        <Row>
-          <Col md={{ size: 4, order: 2 }} className="mb-4">
-            <Cart />
-          </Col>
-          <Col md={{ size: 8, order: 1 }}>
-            {form}
-          </Col>
-        </Row>
-      </Container>
+      <div>
+        <Breadcrumb show={show} showForm={this.showForm}/>
+        <Container>
+          <Row>
+            <Col md={{ size: 4, order: 2 }} className="mb-4">
+              <Cart tickets={this.state.tickets} handleRemoveTicket={this.handleRemoveTicket}/>
+              <div className="text-center">
+                {show === 2 && 
+                  <Button disabled={this.state.tickets.length === 0} onClick={this.handleSubmitFormTwo} color="link"> Commander &#8594;</Button>
+                }
+              </div>
+            </Col>
+            <Col md={{ size: 8, order: 1 }}>
+              {form}
+            </Col>
+          </Row>
+        </Container>
+      </div>
     )
   }
 } 
