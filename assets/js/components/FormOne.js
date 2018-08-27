@@ -19,13 +19,6 @@ const isHoliday = (day) => {
 	return day.getDate() === 25 && day.getMonth() === 11 || day.getDate() === 1 && day.getMonth() === 10 || day.getDate() === 1 && day.getMonth() === 4;
 }
 
-const container = {
-	padding: '.75rem 1.25rem',
-	backgroundColor: '#fff',
-	border: '1px solid rgba(0,0,0,.125)',
-	borderRadius: '.25rem',
-}
-
 const FormOne = (props) => {
 	const isEnabled =
 	props.emailError === false &&
@@ -38,7 +31,7 @@ const FormOne = (props) => {
 			Commande
   </h4>
 
-		<BootstrapForm onSubmit={props.handleSubmit} style={container}>
+		<BootstrapForm onSubmit={props.handleSubmit} className="form-container">
 			<Row>
 				<Col md="6" className="mb-3">
 					<Label for="firstname">Prénom</Label>
