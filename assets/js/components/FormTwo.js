@@ -102,7 +102,7 @@ class FormTwo extends React.Component {
 					Billets
 			</h4>
 	
-				<Form onSubmit={this.handleSubmit} className="form-container" style={{backgroundColor: "#edeeef"}}>
+				<Form onSubmit={this.handleSubmit} className="form-container">
 					<Row>
 						<Col md="6" className="mb-3">
 							<Label for="firstname">Prénom</Label>
@@ -131,6 +131,16 @@ class FormTwo extends React.Component {
 							
 							<Box pose={this.state.showBirthdayPicker ? 'right' : 'left' }>
 								<Input type="text" placeholder="Date de naissance" value={date} className="mb-3" onClick={this.handleBirthdayFieldClick}/>
+								
+								{/* <div className="btn-group btn-group-toggle mb-3">
+									<label className="btn btn-outline-dark active accent-color-button">
+										<input type="radio" name="options" id="option1" autocomplete="off" checked /> Journée complète
+									</label>
+									<label className="btn btn-outline-dark accent-color-button">
+										<input type="radio" name="options" id="option2" autocomplete="off" /> Demi-journée
+									</label>
+								</div> */}
+
 								<div className="d-flex flex-row">
 									<CustomInput type="checkbox" id="discount" label="Je bénéficie d'" checked={this.state.discount} name="discount" onChange={this.handleInputChange} className="mb-3"/> 
 									<span style={{color:"blue"}} href="#" id="discountTooltip">une offre réduite</span>
@@ -149,9 +159,12 @@ class FormTwo extends React.Component {
 							</div>
 						</FormGroup>
 					</div>
+
+					
+
 					
 					<div className="text-center mt-5">
-						<Button disabled={!ready} color="link"> Ajouter billet &#43;</Button>
+						<Button disabled={!ready} className="default-btn"> Ajouter billet &#43;</Button>
 					</div>
 				</Form>
 			</div>

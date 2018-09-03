@@ -8,6 +8,8 @@ import Breadcrumb from './Breadcrumb'
 
 import {isEmailValid} from '../helpers'
 import {fetchSessionData, setSessionData} from '../api'
+
+import {StripeProvider} from 'react-stripe-elements'
 import {Container, Row, Col, Button} from 'reactstrap'
 
 export default class FormContainer extends React.Component {
@@ -21,7 +23,7 @@ export default class FormContainer extends React.Component {
       selectedDay: undefined,
       isDisabled: false,
       tickets: [],
-      isFormOneCompleted: false,
+      isFormOneCompleted: true,
       isFormTwoCompleted: false,
       isFormThreeCompleted: false,
     }
@@ -39,12 +41,12 @@ export default class FormContainer extends React.Component {
     // this.getSessionData()
   }
 
-  getSessionData = async () => {
-    const data = await fetchSessionData()
-    this.setState({
-      ...data
-    })
-  }
+  // async getSessionData(){
+  //   const data = await fetchSessionData()
+  //   this.setState({
+  //     ...data,
+  //   })
+  // }
 
   handleSubmit(event) {
     event.preventDefault();
@@ -130,7 +132,11 @@ export default class FormContainer extends React.Component {
     if (this.state.isFormThreeCompleted) {
       form = <ThankYou {...this.state} /> 
     }  else if (this.state.isFormTwoCompleted) {
-      form = <FormThree {...this.state} />
+      form = (
+        <StripeProvider apiKey="pk_test_12345">
+          <FormThree {...this.state} />
+        </StripeProvider>
+      )
       show = 3
     } else if (this.state.isFormOneCompleted) {
       form = <FormTwo {...this.state} handleTicketAdd={this.handleTicketAdd}/>
@@ -154,7 +160,7 @@ export default class FormContainer extends React.Component {
               <Cart tickets={this.state.tickets} handleRemoveTicket={this.handleRemoveTicket}/>
               <div className="text-center">
                 {show === 2 && 
-                  <Button disabled={this.state.tickets.length === 0} onClick={this.handleSubmitFormTwo} color="link"> Commander &#8594;</Button>
+                  <Button disabled={this.state.tickets.length === 0} onClick={this.handleSubmitFormTwo} className="default-btn"> Commander &#8594;</Button>
                 }
               </div>
             </Col>
