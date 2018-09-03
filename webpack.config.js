@@ -35,6 +35,7 @@ Encore
     .enableVersioning(Encore.isProduction())
 
     .configureBabel(function (babelConfig) {
+        babelConfig.presets.push('stage-3');
         babelConfig.presets.push('env')
     })
     .enableReactPreset()
