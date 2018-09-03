@@ -17,6 +17,7 @@ const Cart = ({tickets, handleRemoveTicket}) => {
 				formula={formula} 
 				handleRemoveTicket={handleRemoveTicket}
 				id={ticket.id}
+				key={ticket.id}
 			/>
 		)
 	})
