@@ -75,7 +75,7 @@ export default class FormContainer extends React.Component {
       })
       return
     }
-    message.success('Commande créée')
+    message.success(result.message)
     this.setState({ 
       isFormOneCompleted: true,
       loading: false,
