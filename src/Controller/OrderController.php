@@ -145,4 +145,28 @@ class OrderController extends AbstractController
             'message' =>  $message,
         ));
     }
+
+    // Send the tickets of the current session's order.
+    public function getTickets() {
+        // return array of tickets associated with order in session.
+    }
+
+    public function addTicket(Request $request, ValidatorInterface $validator){
+        // Return errorMessage or success message with the id
+    }
+
+    public function removeTicket(Request $request){
+        // Check the request
+        // Extract the id from the request
+        // Remove ticket from db
+        // successMessage or errorMessage
+    }
+
+    public function remainingTickets(Request $request) {
+        // Make sure the request is valid and contains a valid date
+        // Else return an errorMessage
+        // Extract the date from the request
+        // Ask the db for the remaining tickets for that date
+        // Return remaining tickets
+    }
 }
