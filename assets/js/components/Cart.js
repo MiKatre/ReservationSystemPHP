@@ -1,4 +1,5 @@
 import React from 'react'
+import { Popconfirm } from 'antd';
 import {getRate} from '../helpers'
 
 const Cart = ({tickets, handleRemoveTicket}) => {
@@ -51,13 +52,14 @@ const Ticket = props => (
 		</div>
 		<div className="d-flex flex-column" >
 			<div style={{marginTop: '-.6rem'}} className="text-right">
+			<Popconfirm title="Supprimer le billet du panier ?" onConfirm={() => props.handleRemoveTicket(props.id)} placement="leftBottom" okText="Oui" cancelText="Non">
 				<span 
-					onClick={() => props.handleRemoveTicket(props.id)}
 					className="text-danger remove-ticket" 
 					style={{fontSize: 20}}
 				>
 					&#215;
 				</span>
+			</Popconfirm>
 			</div>
 			<span className="text-muted">{props.price}€</span>
 		</div>
