@@ -49,9 +49,9 @@ class Order
     private $email;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", unique=true, length=255)
      */
-    private $reservationCode;  // Redundant ?
+    private $reservationCode;
 
     /**
      * @ORM\Column(type="datetime")
