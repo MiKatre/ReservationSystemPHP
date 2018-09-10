@@ -55,7 +55,8 @@ export default class Example extends React.Component {
   }
   render() {
     return (
-      <div className="birthday-picker" style={{backgroundColor: 'rgb(86, 88, 117)', borderRadius: 6}}>
+      // style={{backgroundColor: 'rgb(86, 88, 117)', borderRadius: 6}}
+      <div className="birthday-picker" style={{boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)", backgroundColor: "#FFF"}} > 
         <DayPicker
           month={this.state.month}
           selectedDays={this.props.birthday}

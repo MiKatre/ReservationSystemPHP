@@ -1,16 +1,5 @@
 import React from 'react'
 
-// import ReactStripeElements from 'react-stripe-elements';
-// import InjectedCheckoutForm from './CheckoutForm/CheckoutForm'
-
-// const FormThree = () => (
-//   <Elements>
-//     <InjectedCheckoutForm />
-//   </Elements>
-// )
-
-// export default FormThree
-
 import {
   CardNumberElement,
   CardExpiryElement,
@@ -18,7 +7,10 @@ import {
   PostalCodeElement,
   Elements,
   injectStripe,
-} from 'react-stripe-elements';
+} from 'react-stripe-elements'
+
+import {Button} from 'antd'
+import {Label, Row, Col} from 'reactstrap'
 
 const handleBlur = () => {
   console.log('[blur]');
@@ -37,14 +29,13 @@ const createOptions = (fontSize, padding) => {
   return {
     style: {
       base: {
-        fontSize,
+        // fontSize,
         color: '#424770',
         letterSpacing: '0.025em',
-        fontFamily: 'Source Code Pro, monospace',
         '::placeholder': {
-          color: '#aab7c4',
+          color: '#6c757d',
         },
-        padding,
+        // padding,
       },
       invalid: {
         color: '#9e2146',
@@ -67,39 +58,48 @@ class _SplitForm extends React.Component {
   render() {
     return (
       <form onSubmit={this.handleSubmit}>
-        <div className="mb-3">
-          <label className="stripe-label">
-            Numéro de carte
-            <CardNumberElement
-              onBlur={handleBlur}
-              onChange={handleChange}
-              onFocus={handleFocus}
-              onReady={handleReady}
-              {...createOptions(this.props.fontSize)}
-            />
-          </label>
-        </div>
-        <label className="stripe-label">
-           Date d'expiration
-          <CardExpiryElement
-            onBlur={handleBlur}
-            onChange={handleChange}
-            onFocus={handleFocus}
-            onReady={handleReady}
-            {...createOptions(this.props.fontSize)}
-          />
-        </label>
-        <label className="stripe-label">
-          Cryptogramme visuel
-          <CardCVCElement
-            onBlur={handleBlur}
-            onChange={handleChange}
-            onFocus={handleFocus}
-            onReady={handleReady}
-            {...createOptions(this.props.fontSize)}
-          />
-        </label>
-        <button>Payer</button>
+        <Row>
+          <Col md="6">
+            <Label for="cardNumber" className="stripe-label">
+              Numéro de carte </Label>
+              <CardNumberElement
+                id="cardNumber"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                onFocus={handleFocus}
+                onReady={handleReady}
+                className="form-control"
+                {...createOptions(this.props.fontSize)}
+              />
+          </Col>
+        </Row>
+        <Row>
+          <Col md="6">
+            <label className="stripe-label">
+              Date d'expiration
+              <CardExpiryElement
+                onBlur={handleBlur}
+                onChange={handleChange}
+                onFocus={handleFocus}
+                onReady={handleReady}
+                {...createOptions(this.props.fontSize)}
+              />
+            </label>
+          </Col>
+          <Col md="4">
+            <label className="stripe-label">
+              Cryptogramme visuel
+              <CardCVCElement
+                onBlur={handleBlur}
+                onChange={handleChange}
+                onFocus={handleFocus}
+                onReady={handleReady}
+                {...createOptions(this.props.fontSize)}
+              />
+            </label>
+          </Col>
+        </Row>
+        <Button type="primary" >Payer</Button>
       </form>
     );
   }

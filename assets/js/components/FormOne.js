@@ -1,9 +1,10 @@
 import React from 'react'
 
 import { Row, Form as BootstrapForm, Col, Input, Label, Button, FormFeedback } from 'reactstrap'
+import {Button as AntButton} from 'antd'
+
 import DayPickerInput from 'react-day-picker/DayPickerInput'
 import MomentLocaleUtils, { formatDate, parseDate } from 'react-day-picker/moment'
-
 import 'moment/locale/fr'
 
 const past = {
@@ -74,9 +75,10 @@ const FormOne = (props) => {
 				/>
 				<p className="text-danger">{props.isDisabled && 'impossible de résérver cette date'}</p>
 			</div>
-			<div className="text-center mt-5">
+			{/* <div className="text-center mt-5">
 				<Button disabled={!isEnabled} className="default-btn"> Étape suivante &#8594;</Button>
-			</div>			
+			</div>			 */}
+			<AntButton type="primary" htmlType="submit" disabled={!isEnabled} loading={props.loading}> Choisir les billets &#8594; </AntButton>
 		</BootstrapForm>
 	</div>
 )

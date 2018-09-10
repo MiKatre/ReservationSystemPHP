@@ -1,8 +1,14 @@
 import React from 'react'
-import {Form, FormGroup, Row, Col, Label, Input, CustomInput, Button, UncontrolledTooltip} from 'reactstrap'
+import {Form, FormGroup, Row, Col, Input, Label, CustomInput, Button, UncontrolledTooltip} from 'reactstrap'
 import BirthdayPicker from './BirthdayPicker'
+import { formatDate } from 'react-day-picker/moment'
 import posed, { PoseGroup } from 'react-pose';
 
+import { Radio, DatePicker, TimePicker, Select, Cascader, InputNumber, Button as AntButton  } from 'antd';
+
+
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 
 const Box = posed.div({
 	left: { 
@@ -89,7 +95,7 @@ class FormTwo extends React.Component {
 	}
 
 	render() {
-		const date = this.state.birthday ? this.state.birthday.toLocaleDateString() : ''
+		const date = this.state.birthday ? formatDate(this.state.birthday, 'LL', 'fr'): ''
 		const ready = 
 		this.state.firstName.length !== 0 
 		&& this.state.lastName.length !== 0 
@@ -102,15 +108,17 @@ class FormTwo extends React.Component {
 					Billets
 			</h4>
 	
-				<Form onSubmit={this.handleSubmit} className="form-container">
+				<Form onSubmit={this.handleSubmit} layout="vertical" className="form-container">
 					<Row>
 						<Col md="6" className="mb-3">
 							<Label for="firstname">Prénom</Label>
-							<Input type="text" name="firstName" id="firstname" placeholder="Prénom" value={this.state.firstName} onChange={this.handleInputChange}/>
+
+							<Input type="text" name="firstName" id="firstname" placeholder="Prénom" value={this.state.firstName} onChange={this.handleInputChange}  />
+
 						</Col>
 						<Col md="6" className="mb-3">
 							<Label for="lastname">Nom</Label>
-							<Input type="text" name="lastName" id="lastname" placeholder="Nom" value={this.state.lastName} onChange={this.handleInputChange}/>
+							<Input type="text" name="lastName" id="lastname" placeholder="Nom" value={this.state.lastName} onChange={this.handleInputChange}  />
 						</Col>
 					</Row>
 					<div className="mb-3">
@@ -130,16 +138,21 @@ class FormTwo extends React.Component {
 							</PoseGroup>
 							
 							<Box pose={this.state.showBirthdayPicker ? 'right' : 'left' }>
-								<Input type="text" placeholder="Date de naissance" value={date} className="mb-3" onClick={this.handleBirthdayFieldClick}/>
+								<Input 
+									type="text" 
+									placeholder="Date de naissance" 
+									value={date} 
+									className="mb-3" 
+									onClick={this.handleBirthdayFieldClick} 
+									 />
 								
-								{/* <div className="btn-group btn-group-toggle mb-3">
-									<label className="btn btn-outline-dark active accent-color-button">
-										<input type="radio" name="options" id="option1" autocomplete="off" checked /> Journée complète
-									</label>
-									<label className="btn btn-outline-dark accent-color-button">
-										<input type="radio" name="options" id="option2" autocomplete="off" /> Demi-journée
-									</label>
-								</div> */}
+
+								<Label for="formula">Type de billet</Label> <i className="fas fa-info-circle" style={{color: '#757575'}}></i>
+								<br/>
+								<RadioGroup onChange={this.handleInputChange} className="mb-3" name="formula">
+									<RadioButton value="full" >journée complète</RadioButton>
+									<RadioButton value="half" >demi-journée</RadioButton>
+								</RadioGroup>
 
 								<div className="d-flex flex-row">
 									<CustomInput type="checkbox" id="discount" label="Je bénéficie d'" checked={this.state.discount} name="discount" onChange={this.handleInputChange} className="mb-3"/> 
@@ -149,24 +162,17 @@ class FormTwo extends React.Component {
 									</UncontrolledTooltip>
 								</div>
 							</Box>
-
 						</div>
-						<FormGroup>
-							<Label for="formula">Type de billet</Label> <i className="fas fa-info-circle" style={{color: '#757575'}}></i>
-							<div>
-								<CustomInput type="radio" id="formula" name="formula" label="Journée complète" value="full" onChange={this.handleInputChange} />
-								<CustomInput type="radio" id="formula1" name="formula" label="Demi-journée" value="half" onChange={this.handleInputChange} />
-							</div>
-						</FormGroup>
+
 					</div>
 
-					
-
-					
 					<div className="text-center mt-5">
-						<Button disabled={!ready} className="default-btn"> Ajouter billet &#43;</Button>
+						{/* <Button disabled={!ready} className="default-btn"> Ajouter billet &#43;</Button> */}
+						<AntButton type="primary" htmlType="submit" disabled={!ready} > Ajouter billet &#43;</AntButton>
 					</div>
 				</Form>
+
+					
 			</div>
 		)
 	}
