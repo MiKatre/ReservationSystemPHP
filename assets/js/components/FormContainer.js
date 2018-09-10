@@ -7,10 +7,12 @@ import Cart from './Cart'
 import Breadcrumb from './Breadcrumb'
 
 import {isEmailValid} from '../helpers'
-import {fetchSessionData, setSessionData} from '../api'
+import {fetchSessionData, setSessionData, createOrder} from '../api'
 
 import {StripeProvider} from 'react-stripe-elements'
-import {Container, Row, Col, Button} from 'reactstrap'
+import {Container, Row, Col} from 'reactstrap'
+import { message, Button } from 'antd';
+
 
 export default class FormContainer extends React.Component {
   constructor(props) {
@@ -23,9 +25,11 @@ export default class FormContainer extends React.Component {
       selectedDay: undefined,
       isDisabled: false,
       tickets: [],
-      isFormOneCompleted: true,
+      isFormOneCompleted: false,
       isFormTwoCompleted: false,
       isFormThreeCompleted: false,
+      showForm: 1, 
+      loading: false,
     }
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -39,7 +43,10 @@ export default class FormContainer extends React.Component {
 
   componentDidUpdate(){
     // this.getSessionData()
+    console.log(this.state.showForm)
   }
+
+
 
   // async getSessionData(){
   //   const data = await fetchSessionData()
@@ -48,31 +55,39 @@ export default class FormContainer extends React.Component {
   //   })
   // }
 
-  handleSubmit(event) {
+  async handleSubmit(event) {
     event.preventDefault();
-    // alert('hihihi');
-    // Do some ajax with the server
-    // then show the error 
-    // or 
-    this.setState({ isFormOneCompleted: true })
-    // Transition form with a nice animation
-    // setSessionData()
+    const order = {}
+    order.firstName = this.state.firstName
+    order.lastName = this.state.lastName
+    order.email = this.state.email
+    order.date = this.state.selectedDay
+    
+    console.log(order)
+    const result = await createOrder(order)
+
+    console.log(result)
+    if (result.errors) {
+      message.error(result.errors[0]);
+      this.setState({ 
+        emailError: result.errors[0],
+        loading: false,
+      })
+      return
+    }
+    message.success('Commande créée')
+    this.setState({ 
+      isFormOneCompleted: true,
+      loading: false,
+      showForm: this.state.showForm + 1,
+    })
   }
 
   showForm(n) {
-    if (n === 3) {
-      this.setState({isFormThreeCompleted: false})
-    } else if(n === 2) {
-      this.setState({isFormTwoCompleted: false})
-    } else {
-      this.setState({
-        isFormOneCompleted: false,
-        isFormThreeCompleted: false,
-        isFormTwoCompleted: false,
-      })  
-    }
+    this.setState({
+      showForm: n,
+    })
   }
-
 
 	handleInputChange(event) {
 		const target = event.target;
@@ -106,7 +121,8 @@ export default class FormContainer extends React.Component {
 
   handleSubmitFormTwo(){
     this.setState({ 
-      isFormTwoCompleted: true 
+      isFormTwoCompleted: true,
+      showForm: this.state.showForm + 1,
     })
   }
 
@@ -114,6 +130,7 @@ export default class FormContainer extends React.Component {
     this.setState({
       tickets: [...this.state.tickets, ticket],
     })
+    message.success('Billet ajouté');
   }
 
   handleRemoveTicket(id){
@@ -121,50 +138,56 @@ export default class FormContainer extends React.Component {
     const index = tickets.findIndex(i => i.id === id)
     if (index > -1) {
       tickets.splice(index, 1)
-      console.log(tickets)
       this.setState({tickets: tickets})
+      message.success('Billet supprimé');
     }
   }
 
   render() {
     let form
     let show
-    if (this.state.isFormThreeCompleted) {
-      form = <ThankYou {...this.state} /> 
-    }  else if (this.state.isFormTwoCompleted) {
+
+    
+    if (this.state.showForm === 1) {
+      form = <FormOne
+        handleSubmit={this.handleSubmit}
+        handleInputChange={this.handleInputChange}
+        handleDayChange={this.handleDayChange}
+        {...this.state}
+      />
+      show = 1
+    } else if (this.state.showForm === 2) {
+      form = <FormTwo {...this.state} handleTicketAdd={this.handleTicketAdd} />
+      show = 2
+    } else if (this.state.showForm === 3) {
       form = (
         <StripeProvider apiKey="pk_test_12345">
           <FormThree {...this.state} />
         </StripeProvider>
       )
       show = 3
-    } else if (this.state.isFormOneCompleted) {
-      form = <FormTwo {...this.state} handleTicketAdd={this.handleTicketAdd}/>
-      show = 2
     } else {
-      form =  <FormOne
-              handleSubmit={this.handleSubmit} 
-							handleInputChange={this.handleInputChange} 
-							handleDayChange={this.handleDayChange} 
-							{...this.state} 
-            /> 
-      show = 1
+      form = <ThankYou {...this.state} />
     }
 
     return (
       <div>
         <Breadcrumb show={show} showForm={this.showForm}/>
         <Container>
-          <Row>
-            <Col md={{ size: 4, order: 2 }} className="mb-4">
+          <Row >
+
+            {/* <Col className={ `checkout ${show !== 3 ? 'checkout-hide' : 'checkout-show'}` }>
+
+            </Col> */}
+
+            <Col md={{ size: 4, order: 2 }} style={ show === 2 ? animation.delayed : hide} className="mb-4" >
               <Cart tickets={this.state.tickets} handleRemoveTicket={this.handleRemoveTicket}/>
               <div className="text-center">
-                {show === 2 && 
-                  <Button disabled={this.state.tickets.length === 0} onClick={this.handleSubmitFormTwo} className="default-btn"> Commander &#8594;</Button>
-                }
+                  <Button type="primary" disabled={this.state.tickets.length === 0} onClick={this.handleSubmitFormTwo} > Commander &#8594;</Button>
               </div>
             </Col>
-            <Col md={{ size: 8, order: 1 }}>
+          
+            <Col md={{ size: 8, order: 1, offset: show === 2 ? 0 : 2 }} style={animation.classic}>
               {form}
             </Col>
           </Row>
@@ -173,3 +196,20 @@ export default class FormContainer extends React.Component {
     )
   }
 } 
+
+const animation = {
+  classic: {
+    transition: 'all 1s linear',
+  },
+  delayed: {
+    transition: 'all 0s linear 1s',
+  },
+  checkout: {
+    transition: 'all 1s linear 1s',
+  }
+}
+
+const hide = {
+  position: 'absolute',
+  opacity: '0',
+}
