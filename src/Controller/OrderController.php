@@ -16,6 +16,8 @@ use App\Repository\OrderRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,7 +27,9 @@ class OrderController extends AbstractController
     /**
      * @Route("/", name="site_homepage")
      */
-    public function homepage() {
+    public function homepage(SessionInterface $session) {
+
+        $session->start();
 
         $entityManager = $this->getDoctrine()->getManager();
 
@@ -85,7 +89,7 @@ class OrderController extends AbstractController
     /**
      * @Route("/api/create_order", name="api_create_order", methods={"POST"})
      */
-    public function createOrder(Request $request, ValidatorInterface $validator) {
+    public function createOrder(Request $request, ValidatorInterface $validator, SessionInterface $session) {
 
         //return JsonResponse::fromJsonString($request->getContent());
        if ($request->getContentType() != 'json' || !$request->getContent()) {
@@ -96,20 +100,30 @@ class OrderController extends AbstractController
        }
 
         $data = json_decode($request->getContent());
+        $entityManager = $this->getDoctrine()->getManager();
 
-        //return $this->json($data->firstName);
+        $order = $session->has('order') ?
+            $entityManager
+                ->getRepository(Order::class)
+                ->find($session->get('order')
+                    ->getId() )
+            : new Order();
 
-        $order = new Order();
         $order->setFirstName($data->firstName);
         $order->setLastName($data->lastName);
         $order->setEmail($data->email);
         $order->setDate(new \DateTime($data->date));
-        $order->setReservationCode('X06h71k');                 // Generate one ? Redundant with id ?
+
+        // If we are creating a new order
+        if (!$session->has('order')) {
+            // Generate a random reservation code.
+            $random = bin2hex(random_bytes(4));
+            $order->setReservationCode($random);
+        }
 
         $errors = $validator->validate($order);
 
         if(count($errors) > 0) {
-            // $errorString = (string) $errors;
             $errorsArray = [];
 
             foreach ($errors as $violation) {
@@ -118,13 +132,17 @@ class OrderController extends AbstractController
             return $this->json(array('errors' => $errorsArray));
         }
 
-        $entityManager = $this->getDoctrine()->getManager();
-
         $entityManager->persist($order);
 
         $entityManager->flush();
 
-        return $this->json(array('username' => 'John Doe'));
+        $message = $session->has('order') ? 'Commande mise à jour' : 'Commande créée' ;
+
+        $session->set('order', $order);
+
+        return $this->json(array(
+            'success' => true,
+            'message' =>  $message,
+        ));
     }
-    
 }
