@@ -36,10 +36,21 @@ Encore
 
     .configureBabel(function (babelConfig) {
         babelConfig.presets.push('stage-3');
-        babelConfig.presets.push('env')
+        babelConfig.presets.push('env');
+        babelConfig.plugins.push(['import', { "libraryName": "antd", "libraryDirectory": "es", "style": true }]);
     })
     .enableReactPreset()
 
+    .enableLessLoader(function(options) {
+        // https://github.com/webpack-contrib/less-loader#examples
+        // http://lesscss.org/usage/#command-line-usage-options
+        // options.relativeUrls = false;
+        options.modifyVars = {
+            'primary-color': '#1DA57A',
+            'link-color': '#1DA57A',
+        };
+        options.javascriptEnabled = true;
+    });
 
 
     // enables Sass/SCSS support
