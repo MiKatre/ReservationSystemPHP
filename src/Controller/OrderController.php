@@ -150,8 +150,84 @@ class OrderController extends AbstractController
         // return array of tickets associated with order in session.
     }
 
-    public function addTicket(Request $request, ValidatorInterface $validator){
+    /**
+     * @Route("/api/add_ticket", name="api_add_ticket", methods={"POST"})
+     */
+    public function addTicket(Request $request, ValidatorInterface $validator, SessionInterface $session){
         // Return errorMessage or success message with the id
+
+        if ($request->getContentType() != 'json' || !$request->getContent()) {
+            $error = new Response();
+            $error->setContent('Mauvais format de données. JSON attendu.');
+            $error->setStatusCode(500);
+            return $error;
+        }
+
+        $data = json_decode($request->getContent());
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $order = $entityManager
+            ->getRepository(Order::class)
+            ->find($session->get('order')->getId());
+
+        $dateOfBirth = new \DateTime($data->dateOfBirth);
+
+        $ticket = new Ticket();
+        $ticket->setFirstName($data->firstName);
+        $ticket->setLastName($data->lastName);
+        $ticket->setDateOfBirth($dateOfBirth);
+        $ticket->setDiscount($data->discount);
+        $ticket->setPrice($this->getPrice($dateOfBirth, $data->discount)->price);
+        $ticket->setIsFullDay($data->isFullDay);
+
+        $order->addTicket($ticket);
+
+        $entityManager->persist($order);
+
+        $entityManager->flush();
+
+        $tickets = [];
+
+        foreach ($order->getTickets() as $singleTicket){
+            $dateOfBirth = $singleTicket->getDateOfBirth();
+            $object = (object) [
+                'id' => $singleTicket->getId(),
+                'firstName' => $singleTicket->getFirstName(),
+                'lastName' => $singleTicket->getLastName(),
+                'dateOfBirth' => $dateOfBirth,
+                'price' => $this->getPrice($dateOfBirth, $singleTicket->getDiscount())->price,
+                'priceName' => $this->getPrice($dateOfBirth, $singleTicket->getDiscount())->name,
+                'isFullDay' => $singleTicket->getIsFullDay(),
+            ];
+            $tickets[] = $object;
+        }
+
+        return $this->json(array(
+            'success' => true,
+            'tickets' => $tickets,
+            'message' => 'Billet ajouté',
+        ));
+    }
+
+    private function getAge($dateOfBirth) {
+        $diff = $dateOfBirth->diff(new \DateTime());
+        return (int) ($diff->format('%y'));
+    }
+
+    private function getPrice($dateOfBirth, $discount) {
+        $age = (int) $this->getAge($dateOfBirth);
+        // à partir de 12 ans
+        $normal = (object) ['price' => 1600, 'name' => 'Normal'];
+        // de 4 à 12 ans
+        $children = (object) ['price' => 800, 'name' => 'Enfant'];
+        // à partir de 60 ans
+        $senior = (object) ['price' => 1200, 'name' => 'Senior'];
+        // Moins de 4 ans
+        $free = (object) ['price' => 0, 'name' => 'Enfant'];
+
+
+        return ($age >= 4 && $age <= 12 ? ($children) : ($age >= 60 ? ($senior) : ($age < 4 ? ($free) : ($normal))));
     }
 
     public function removeTicket(Request $request){

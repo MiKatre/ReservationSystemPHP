@@ -18,6 +18,26 @@ export const handleOrder = async (order) => {
     console.log(err)
   }
 }
+
+export const addTicket = async ticket => {
+  try {
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(ticket),
+    }
+    const response = await fetch(`${root}add_ticket`, options);
+    const result = await response.json()
+
+    return result
+    
+  } catch(err) {
+    console.log(err)
+  }
+}
+
 }
 
 export const fetchSessionData = async () => {

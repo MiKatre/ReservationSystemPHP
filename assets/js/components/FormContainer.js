@@ -125,11 +125,32 @@ export default class FormContainer extends React.Component {
     })
   }
 
-  handleTicketAdd(ticket) {
+  async handleTicketAdd(ticket) {
+    const result = await addTicket(ticket)
+
+    if(!result.success) {
+      message.error(result.message);
+    }
+
     this.setState({
-      tickets: [...this.state.tickets, ticket],
+      // tickets: [...this.state.tickets, ticket],
+      tickets: result.tickets,
     })
-    message.success('Billet ajouté');
+    console.log(this.state.tickets)
+    message.success(result.message);
+  }
+
+  async getTickets() {
+    const result = await fetchTickets()
+    console.log(result)
+    if (!result.success) {
+      message.error('impossible de récupérér les billets')
+      return
+    }
+
+    this.setState({
+      tickets: result.tickets,
+    })
   }
 
   handleRemoveTicket(id){
