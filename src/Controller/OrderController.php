@@ -91,7 +91,6 @@ class OrderController extends AbstractController
      */
     public function createOrder(Request $request, ValidatorInterface $validator, SessionInterface $session) {
 
-        //return JsonResponse::fromJsonString($request->getContent());
        if ($request->getContentType() != 'json' || !$request->getContent()) {
            $error = new Response();
            $error->setContent('Mauvais format de données. JSON attendu.');
