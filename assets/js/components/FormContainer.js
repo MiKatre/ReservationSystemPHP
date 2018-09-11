@@ -11,7 +11,7 @@ import {handleOrder, addTicket, removeTicket, fetchTickets} from '../api'
 
 import {StripeProvider} from 'react-stripe-elements'
 import {Container, Row, Col} from 'reactstrap'
-import { message, Button } from 'antd';
+import {message, Button} from 'antd';
 
 
 export default class FormContainer extends React.Component {
@@ -153,14 +153,22 @@ export default class FormContainer extends React.Component {
     })
   }
 
-  handleRemoveTicket(id){
-    let {tickets} = this.state
-    const index = tickets.findIndex(i => i.id === id)
-    if (index > -1) {
-      tickets.splice(index, 1)
-      this.setState({tickets: tickets})
-      message.success('Billet supprimé');
+  async handleRemoveTicket(id){
+    const result = await removeTicket(id)
+    if (result.success) {
+      this.getTickets()
+      message.success('Billet supprimé')
+      return
     }
+    message.error('Impossible de supprimer ce billet')
+
+    // let {tickets} = this.state
+    // const index = tickets.findIndex(i => i.id === id)
+    // if (index > -1) {
+    //   tickets.splice(index, 1)
+    //   this.setState({tickets: tickets})
+    //   message.success('Billet supprimé');
+    // }
   }
 
   render() {

@@ -230,7 +230,52 @@ class OrderController extends AbstractController
         return ($age >= 4 && $age <= 12 ? ($children) : ($age >= 60 ? ($senior) : ($age < 4 ? ($free) : ($normal))));
     }
 
-    public function removeTicket(Request $request){
+    /**
+     * @Route("/api/remove_ticket", name="api_remove_ticket", methods={"POST"})
+     */
+    public function removeTicket(Request $request, SessionInterface $session) {
+
+        if ($request->getContentType() != 'json' || !$request->getContent()) {
+            $error = new Response();
+            $error->setContent('Mauvais format de données. JSON attendu.');
+            $error->setStatusCode(500);
+            return $error;
+        }
+
+        $data = json_decode($request->getContent());
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $order = $entityManager
+            ->getRepository(Order::class)
+            ->find($session->get('order')->getId());
+
+        $ticket = null;
+
+        foreach ($order->getTickets() as $singleTicket){
+            if ($singleTicket->getId() === $data->id) {
+                $ticket = $singleTicket;
+            }
+        }
+
+        if ($ticket === null) {
+            $error = new Response();
+            $error->setContent('Ticket introuvable.');
+            $error->setStatusCode(500);
+            return $error;
+        }
+
+        $order->removeTicket($ticket);
+
+        $entityManager->persist($order);
+
+        $entityManager->flush();
+
+        return $this->json(array(
+            'success' => true,
+            'message' => 'Billet supprimé',
+        ));
+
         // Check the request
         // Extract the id from the request
         // Remove ticket from db

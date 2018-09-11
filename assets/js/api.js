@@ -38,6 +38,26 @@ export const addTicket = async ticket => {
   }
 }
 
+export const removeTicket = async id => {
+  try {
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({id: id}),
+    }
+    const response = await fetch(`${root}remove_ticket`, options);
+    const result = await response.json()
+
+    return result
+    
+  } catch(err) {
+    console.log(err)
+  }
+}
+
+export const fetchTickets = async () => {
 }
 
 export const fetchSessionData = async () => {
