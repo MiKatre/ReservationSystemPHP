@@ -1,6 +1,7 @@
 const root = 'http://localhost:8888/projet4/public/api/'
 
-export const createOrder = async (order) => {
+export const handleOrder = async (order) => {
+  try {
   const options = {
     method: 'POST', 
     headers: {
@@ -12,6 +13,11 @@ export const createOrder = async (order) => {
   const response = await fetch(`${root}create_order`, options)
   const result = await response.json()
   return result
+
+  } catch(err) {
+    console.log(err)
+  }
+}
 }
 
 export const fetchSessionData = async () => {

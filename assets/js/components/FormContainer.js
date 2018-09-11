@@ -7,7 +7,7 @@ import Cart from './Cart'
 import Breadcrumb from './Breadcrumb'
 
 import {isEmailValid} from '../helpers'
-import {fetchSessionData, setSessionData, createOrder} from '../api'
+import {handleOrder, addTicket, removeTicket, fetchTickets} from '../api'
 
 import {StripeProvider} from 'react-stripe-elements'
 import {Container, Row, Col} from 'reactstrap'
@@ -63,8 +63,7 @@ export default class FormContainer extends React.Component {
     order.email = this.state.email
     order.date = this.state.selectedDay
     
-    console.log(order)
-    const result = await createOrder(order)
+    const result = await handleOrder(order)
 
     console.log(result)
     if (result.errors) {
