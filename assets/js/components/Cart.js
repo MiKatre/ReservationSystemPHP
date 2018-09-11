@@ -9,11 +9,11 @@ const Cart = ({tickets, handleRemoveTicket}) => {
 	const ticketList = tickets.map(ticket => {
 		const rate = getRate(ticket.birthday)
 		total += rate.price / 100
-		const formula = ticket.formula === 'full' ? 'Journée complète' : 'Demi-journée'
+		const formula = ticket.isFullDay ? 'Journée complète' : 'Demi-journée'
 		return (
 			<Ticket 
-				price={rate.price / 100} 
-				rateName={rate.name} 
+				price={ticket.price / 100} 
+				rateName={ticket.priceName} 
 				name={`${ticket.firstName.slice(0, 1).toUpperCase()}. ${ticket.lastName}`} 
 				formula={formula} 
 				handleRemoveTicket={handleRemoveTicket}

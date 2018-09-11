@@ -30,10 +30,9 @@ class FormTwo extends React.Component {
 			firstName: '',
 			lastName: '',
 			birthday: undefined,
-			formula: undefined,
+			isFullDay: undefined,
 			discount: false,
 			showBirthdayPicker: false,
-			ticketId: 0,
 		}
 		this.handleInputChange = this.handleInputChange.bind(this)
 		this.handleBirthdayFieldClick = this.handleBirthdayFieldClick.bind(this)
@@ -73,22 +72,20 @@ class FormTwo extends React.Component {
 			firstName: '',
 			lastName: '',
 			birthday: undefined,
-			formula: undefined,
+			// isFullDay: undefined,
 			discount: false,
-			ticketId: this.state.ticketId++
 		})
 	}
 
 	handleSubmit(event){
 		event.preventDefault()
-		if(this.state.firstName.length !== 0 && this.state.lastName.length !== 0 && typeof this.state.birthday === 'object' && typeof this.state.formula !== 'undefined') {
+		if(this.state.firstName.length !== 0 && this.state.lastName.length !== 0 && typeof this.state.birthday === 'object' && typeof this.state.isFullDay !== 'undefined') {
 			const ticket = {}
 			ticket.firstName = this.state.firstName
 			ticket.lastName = this.state.lastName
-			ticket.birthday = this.state.birthday
-			ticket.formula = this.state.formula
+			ticket.dateOfBirth = this.state.birthday
+			ticket.isFullDay = this.state.isFullDay
 			ticket.discount = this.state.discount
-			ticket.id = this.state.ticketId
 			this.props.handleTicketAdd(ticket)
 			this.wipeState()
 		}
@@ -100,7 +97,7 @@ class FormTwo extends React.Component {
 		this.state.firstName.length !== 0 
 		&& this.state.lastName.length !== 0 
 		&& typeof this.state.birthday === 'object' 
-		&& typeof this.state.formula !== 'undefined'
+		&& typeof this.state.isFullDay !== 'undefined'
 
 		return (
 			<div>
@@ -147,11 +144,11 @@ class FormTwo extends React.Component {
 									 />
 								
 
-								<Label for="formula">Type de billet</Label> <i className="fas fa-info-circle" style={{color: '#757575'}}></i>
+								<Label for="isFullDay">Type de billet</Label> <i className="fas fa-info-circle" style={{color: '#757575'}}></i>
 								<br/>
-								<RadioGroup onChange={this.handleInputChange} className="mb-3" name="formula">
-									<RadioButton value="full" >journée complète</RadioButton>
-									<RadioButton value="half" >demi-journée</RadioButton>
+								<RadioGroup onChange={this.handleInputChange} className="mb-3" name="isFullDay">
+									<RadioButton value={true} >journée complète</RadioButton>
+									<RadioButton value={false} >demi-journée</RadioButton>
 								</RadioGroup>
 
 								<div className="d-flex flex-row">
