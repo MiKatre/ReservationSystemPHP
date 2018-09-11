@@ -145,9 +145,34 @@ class OrderController extends AbstractController
         ));
     }
 
-    // Send the tickets of the current session's order.
-    public function getTickets() {
-        // return array of tickets associated with order in session.
+    /**
+     * @Route("/api/get_tickets", name="api_get_tickets", methods={"POST"})
+     */
+    public function getTickets(SessionInterface $session) {
+        $entityManager = $this->getDoctrine()->getManager();
+        $order = $entityManager
+            ->getRepository(Order::class)
+            ->find($session->get('order')->getId());
+
+        $tickets = [];
+
+        foreach ($order->getTickets() as $singleTicket){
+            $dateOfBirth = $singleTicket->getDateOfBirth();
+            $object = (object) [
+                'id' => $singleTicket->getId(),
+                'firstName' => $singleTicket->getFirstName(),
+                'lastName' => $singleTicket->getLastName(),
+                'dateOfBirth' => $dateOfBirth,
+                'price' => $this->getPrice($dateOfBirth, $singleTicket->getDiscount())->price,
+                'priceName' => $this->getPrice($dateOfBirth, $singleTicket->getDiscount())->name,
+                'isFullDay' => $singleTicket->getIsFullDay(),
+            ];
+            $tickets[] = $object;
+        }
+        return $this->json(array(
+            'success' => true,
+            'tickets' => $tickets,
+        ));
     }
 
     /**

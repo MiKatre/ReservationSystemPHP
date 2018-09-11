@@ -2,17 +2,17 @@ const root = 'http://localhost:8888/projet4/public/api/'
 
 export const handleOrder = async (order) => {
   try {
-  const options = {
-    method: 'POST', 
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(order),
-  }
-
-  const response = await fetch(`${root}create_order`, options)
-  const result = await response.json()
-  return result
+    const options = {
+      method: 'POST', 
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(order),
+    }
+  
+    const response = await fetch(`${root}create_order`, options)
+    const result = await response.json()
+    return result
 
   } catch(err) {
     console.log(err)
@@ -58,7 +58,27 @@ export const removeTicket = async id => {
 }
 
 export const fetchTickets = async () => {
+  try {
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    }
+    const response = await fetch(`${root}get_tickets`, options);
+    const result = await response.json()
+
+    return result
+    
+  } catch(err) {
+    console.log(err)
+  }
 }
+
+
+
+
+
 
 export const fetchSessionData = async () => {
   try {
