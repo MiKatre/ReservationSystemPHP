@@ -48,6 +48,11 @@ class Ticket
      */
     private $dateOfBirth;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isFullDay;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -121,6 +126,18 @@ class Ticket
     public function setOrderRelation(?Order $orderRelation): self
     {
         $this->orderRelation = $orderRelation;
+
+        return $this;
+    }
+
+    public function getIsFullDay(): ?bool
+    {
+        return $this->isFullDay;
+    }
+
+    public function setIsFullDay(bool $isFullDay): self
+    {
+        $this->isFullDay = $isFullDay;
 
         return $this;
     }
