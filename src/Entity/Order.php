@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Order
 {
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Ticket", mappedBy="orderRelation", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Ticket", mappedBy="orderRelation", orphanRemoval=true, cascade={"persist"})
      */
     private $tickets;
 
@@ -49,7 +49,7 @@ class Order
     private $email;
 
     /**
-     * @ORM\Column(type="string", unique=true, length=255)
+     * @ORM\Column(type="string", length=255)
      */
     private $reservationCode;
 
