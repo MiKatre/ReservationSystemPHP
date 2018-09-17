@@ -6,6 +6,7 @@ import FormOne from './FormOne'
 import FormTwo from './FormTwo'
 import FormThree from './FormThree'
 import Breadcrumb from './Breadcrumb'
+import ThankYou from './ThankYou'
 
 import {isEmailValid} from '../helpers'
 import {handleOrder, addTicket, removeTicket, fetchTickets, fetchRemainingTickets} from '../api'
@@ -26,6 +27,7 @@ export default class FormContainer extends React.Component {
       selectedDay: undefined,
       isDisabled: false,
       tickets: [],
+      reservationCode: undefined,
       isFormOneCompleted: false,
       isFormTwoCompleted: false,
       isFormThreeCompleted: false,
@@ -40,6 +42,8 @@ export default class FormContainer extends React.Component {
 
     this.handleSubmitFormTwo = this.handleSubmitFormTwo.bind(this);
     this.showForm = this.showForm.bind(this);
+
+    this.handleSubmitFormThree = this.handleSubmitFormThree.bind(this);
   }
 
   componentDidUpdate(){
@@ -84,6 +88,7 @@ export default class FormContainer extends React.Component {
       isFormOneCompleted: true,
       loading: false,
       showForm: this.state.showForm + 1,
+      reservationCode: result.reservationCode,
     })
   }
 
@@ -176,6 +181,15 @@ export default class FormContainer extends React.Component {
     // }
   }
 
+    // FORM 3
+
+    handleSubmitFormThree(responseMessage) {
+      message.success(responseMessage)
+      this.setState({
+        isFormThreeCompleted: true,
+      })
+    }
+
   render() {
     let form
     let show
@@ -197,7 +211,7 @@ export default class FormContainer extends React.Component {
     } else if (this.state.showForm === 3) {
       form = (
         <StripeProvider apiKey="pk_test_OFwnhpsnI4Xwml5cxOzWH6UX">
-          <FormThree {...this.state} />
+          <FormThree {...this.state} handleSubmit={this.handleSubmitFormThree} />
         </StripeProvider>
       )
       show = 3
@@ -205,26 +219,30 @@ export default class FormContainer extends React.Component {
       form = <ThankYou {...this.state} />
     }
 
-    return (
-      <div>
-        <Breadcrumb show={show} showForm={this.showForm}/>
-        <Container>
-          <Row >
-
-            <Col md={{ size: 4, order: 2 }} style={ show === 2 ? animation.delayed : hide} className="mb-4" >
-              <Cart tickets={this.state.tickets} handleRemoveTicket={this.handleRemoveTicket}/>
-              <div className="text-center">
-                  <Button type="primary" disabled={this.state.tickets.length === 0} onClick={this.handleSubmitFormTwo} > Commander &#8594;</Button>
-              </div>
-            </Col>
-          
-            <Col md={{ size: 8, order: 1, offset: show === 2 ? 0 : 2 }} style={animation.classic}>
-              {form}
-            </Col>
-          </Row>
-        </Container>
-      </div>
-    )
+    const {isFormOneCompleted, isFormTwoCompleted, isFormThreeCompleted} = this.state
+    if (isFormOneCompleted && isFormTwoCompleted && isFormThreeCompleted) {
+      return <ThankYou {...this.state}/>
+    } else {
+      return (
+        <div>
+          <Breadcrumb show={show} showForm={this.showForm}/>
+          <Container>
+            <Row >
+              <Col md={{ size: 4, order: 2 }} style={ show === 2 ? animation.delayed : hide} className="mb-4" >
+                <Cart tickets={this.state.tickets} handleRemoveTicket={this.handleRemoveTicket}/>
+                <div className="text-center">
+                    <Button type="primary" disabled={this.state.tickets.length === 0} onClick={this.handleSubmitFormTwo} > Commander &#8594;</Button>
+                </div>
+              </Col>
+            
+              <Col md={{ size: 8, order: 1, offset: show === 2 ? 0 : 2 }} style={animation.classic}>
+                {form}
+              </Col>
+            </Row>
+          </Container>
+        </div>
+      )
+    }
   }
 } 
 

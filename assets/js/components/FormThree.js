@@ -52,6 +52,9 @@ class _SplitForm extends React.Component {
 
   async sendToken(payload) {
     const response = await pay(payload)
+    if (response.paid) {
+      this.props.handleSubmit(response.message)
+    }
     console.log(response)
   }
 
@@ -142,7 +145,7 @@ export default class Checkout extends React.Component {
         <h4 className="mb-3">Paiement</h4>
         <div className="form-container">
           <Elements>
-            <SplitForm fontSize={elementFontSize} />
+            <SplitForm fontSize={elementFontSize} handleSubmit={this.props.handleSubmit}/>
           </Elements>
         </div>
       </div>

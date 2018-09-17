@@ -144,6 +144,7 @@ class OrderController extends AbstractController
         return $this->json(array(
             'success' => true,
             'message' =>  $message,
+            'reservationCode' => $order->getReservationCode(),
         ));
     }
 
