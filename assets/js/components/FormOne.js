@@ -74,6 +74,9 @@ const FormOne = (props) => {
 					}}
 				/>
 				<p className="text-danger">{props.isDisabled && 'impossible de résérver cette date'}</p>
+				<div style={{maxWidth: 219}}>
+					{props.counter}
+				</div>
 			</div>
 			{/* <div className="text-center mt-5">
 				<Button disabled={!isEnabled} className="default-btn"> Étape suivante &#8594;</Button>

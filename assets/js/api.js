@@ -75,6 +75,21 @@ export const fetchTickets = async () => {
   }
 }
 
+export const fetchRemainingTickets = async dateObject => {
+  try {
+    const date = dateObject.toDateString()
+    const response = await fetch(`${root}get_remaining_tickets?date=${date}`, {
+      method: 'GET',
+    });
+    const result = await response.json()
+
+    return result
+
+  } catch(err) {
+    console.log(err)
+  }
+}
+
 export const pay = async token => {
   try {
     const options = {
@@ -97,6 +112,8 @@ export const pay = async token => {
 
 
 
+
+
 export const fetchSessionData = async () => {
   try {
     const response = await fetch(`${root}send-session-data`)
@@ -109,7 +126,6 @@ export const fetchSessionData = async () => {
     console.log(err)
   }
 }
-
 export const setSessionData = async (state) => {
   try {
 
@@ -117,7 +133,6 @@ export const setSessionData = async (state) => {
 
   }
 }
-
 export const syncState = async () => {
   
 }

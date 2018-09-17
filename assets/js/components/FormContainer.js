@@ -1,13 +1,14 @@
 import React from 'react'
 
+import Cart from './Cart'
+import Counter from './TicketCounter'
 import FormOne from './FormOne'
 import FormTwo from './FormTwo'
 import FormThree from './FormThree'
-import Cart from './Cart'
 import Breadcrumb from './Breadcrumb'
 
 import {isEmailValid} from '../helpers'
-import {handleOrder, addTicket, removeTicket, fetchTickets} from '../api'
+import {handleOrder, addTicket, removeTicket, fetchTickets, fetchRemainingTickets} from '../api'
 
 import {StripeProvider} from 'react-stripe-elements'
 import {Container, Row, Col} from 'reactstrap'
@@ -43,9 +44,12 @@ export default class FormContainer extends React.Component {
 
   componentDidUpdate(){
     // this.getSessionData()
-    console.log(this.state.showForm)
+    // console.log(this.state.showForm)
   }
 
+  componentDidMount() {
+
+  }
 
 
   // async getSessionData(){
@@ -63,9 +67,10 @@ export default class FormContainer extends React.Component {
     order.email = this.state.email
     order.date = this.state.selectedDay
     
+    // console.log(order)
     const result = await handleOrder(order)
 
-    console.log(result)
+    // console.log(result)
     if (result.errors) {
       message.error(result.errors[0]);
       this.setState({ 
@@ -109,7 +114,7 @@ export default class FormContainer extends React.Component {
 	}
 
   handleDayChange(selectedDay, modifiers) {
-		console.log(modifiers)
+		// console.log(modifiers)
 		this.setState({
 			selectedDay: modifiers.disabled === true ? undefined : selectedDay,
 			isDisabled: modifiers.disabled === true
@@ -175,21 +180,23 @@ export default class FormContainer extends React.Component {
     let form
     let show
 
+    const counter = this.state.selectedDay ? <Counter date={this.state.selectedDay} /> : null;
     
     if (this.state.showForm === 1) {
       form = <FormOne
         handleSubmit={this.handleSubmit}
         handleInputChange={this.handleInputChange}
         handleDayChange={this.handleDayChange}
+        counter={counter}
         {...this.state}
       />
       show = 1
     } else if (this.state.showForm === 2) {
-      form = <FormTwo {...this.state} handleTicketAdd={this.handleTicketAdd} />
+      form = <FormTwo {...this.state} handleTicketAdd={this.handleTicketAdd} counter={counter}/>
       show = 2
     } else if (this.state.showForm === 3) {
       form = (
-        <StripeProvider apiKey="pk_test_12345">
+        <StripeProvider apiKey="pk_test_OFwnhpsnI4Xwml5cxOzWH6UX">
           <FormThree {...this.state} />
         </StripeProvider>
       )
@@ -203,10 +210,6 @@ export default class FormContainer extends React.Component {
         <Breadcrumb show={show} showForm={this.showForm}/>
         <Container>
           <Row >
-
-            {/* <Col className={ `checkout ${show !== 3 ? 'checkout-hide' : 'checkout-show'}` }>
-
-            </Col> */}
 
             <Col md={{ size: 4, order: 2 }} style={ show === 2 ? animation.delayed : hide} className="mb-4" >
               <Cart tickets={this.state.tickets} handleRemoveTicket={this.handleRemoveTicket}/>

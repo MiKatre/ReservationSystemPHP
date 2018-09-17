@@ -104,7 +104,6 @@ class FormTwo extends React.Component {
 				<h4 className="mb-3">
 					Billets
 			</h4>
-	
 				<Form onSubmit={this.handleSubmit} layout="vertical" className="form-container">
 					<Row>
 						<Col md="6" className="mb-3">
@@ -158,6 +157,7 @@ class FormTwo extends React.Component {
 										Il sera nécessaire de présenter sa carte d’étudiant, militaire ou équivalent lors de l’entrée pour prouver qu’on bénéficie bien du tarif réduit.
 									</UncontrolledTooltip>
 								</div>
+									{this.props.counter}
 							</Box>
 						</div>
 

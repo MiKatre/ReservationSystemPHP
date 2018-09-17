@@ -208,7 +208,21 @@ class OrderController extends AbstractController
 
         $order->addTicket($ticket);
 
+        $remainingTickets = $entityManager->getRepository(Date::class)->findOneBy(
+            ['date' => $order->getDate()]
+        );
+
+        if(empty($remainingTickets)) {
+            $remainingTickets = new Date();
+            $remainingTickets->setDate($order->getDate());
+            $remainingTickets->setNbOfTickets(1);
+        } else {
+            $remainingTickets->setNbOfTickets($remainingTickets->getNbOfTickets() + 1);
+        }
+
+
         $entityManager->persist($order);
+        $entityManager->persist($remainingTickets);
 
         $entityManager->flush();
 
@@ -292,7 +306,16 @@ class OrderController extends AbstractController
 
         $order->removeTicket($ticket);
 
+        $remainingTickets = $entityManager->getRepository(Date::class)->findOneBy(
+            ['date' => $order->getDate()]
+        );
+
+        if($remainingTickets->getNbOfTickets() > 0) {
+            $remainingTickets->setNbOfTickets($remainingTickets->getNbOfTickets() - 1);
+        }
+
         $entityManager->persist($order);
+        $entityManager->persist($remainingTickets);
 
         $entityManager->flush();
 
@@ -307,7 +330,42 @@ class OrderController extends AbstractController
         // successMessage or errorMessage
     }
 
+    /**
+     * @Route("/api/get_remaining_tickets", name="api_get_remaining_tickets", methods={"GET"})
+     */
     public function remainingTickets(Request $request) {
+
+        $date = $request->query->get('date');
+
+        if (!$date) {
+            $error = new Response();
+            $error->setContent('Date attendue.');
+            $error->setStatusCode(500);
+            return $error;
+        }
+
+        $dateObject = new \DateTime($date);
+
+        $normalizedDate = $dateObject->format('d/m/Y');
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $entity = $entityManager->getRepository(Date::class)->findOneBy(
+            ['date' => $dateObject]
+        );
+
+        $remaining = Date::MAX_TICKETS_PER_DAY;
+        if(!empty($entity)) {
+            $remaining = Date::MAX_TICKETS_PER_DAY - $entity->getNbOfTickets();
+        }
+
+        return $this->json(array(
+            'success' => true,
+            'message' => 'X Billets restants le ' . $normalizedDate,
+            'remaining' => $remaining,
+        ));
+    }
+
     /**
      * @Route("/api/pay", name="api_pay", methods={"POST"})
      */
