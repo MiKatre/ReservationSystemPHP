@@ -42,6 +42,7 @@ export default class FormContainer extends React.Component {
 
     this.handleSubmitFormTwo = this.handleSubmitFormTwo.bind(this);
     this.showForm = this.showForm.bind(this);
+    this.getTickets = this.getTickets.bind(this);
 
     this.handleSubmitFormThree = this.handleSubmitFormThree.bind(this);
   }
@@ -206,7 +207,7 @@ export default class FormContainer extends React.Component {
       />
       show = 1
     } else if (this.state.showForm === 2) {
-      form = <FormTwo {...this.state} handleTicketAdd={this.handleTicketAdd} counter={counter}/>
+      form = <FormTwo {...this.state} handleTicketAdd={this.handleTicketAdd} getTickets={this.getTickets} counter={counter}/>
       show = 2
     } else if (this.state.showForm === 3) {
       form = (

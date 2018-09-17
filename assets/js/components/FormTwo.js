@@ -40,8 +40,8 @@ class FormTwo extends React.Component {
 		this.handleSubmit = this.handleSubmit.bind(this)
 	}
 
-	componentDidUpdate(){
-	
+	componentDidMount(){
+		this.props.getTickets()
 	}
 
 	handleBirthdayFieldClick(){
