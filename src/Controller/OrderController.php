@@ -389,15 +389,15 @@ class OrderController extends AbstractController
     public function pay(Request $request, SessionInterface $session){
 
         if ($request->getContentType() != 'json' || !$request->getContent())
-            return customError(500, 'Mauvais format de données. JSON attendu.');
+            return $this->customError(500, 'Mauvais format de données. JSON attendu.');
 
         $data = json_decode($request->getContent());
 
         if (!isset($data->token) || empty($data->token))
-            return customError(500, 'No token received');
+            return $this->customError(500, 'No token received');
 
         if (!isset($data->token->id) || empty($data->token->id))
-            return customError(500, 'Payload received without id');
+            return $this->customError(500, 'Payload received without id');
 
         $token = $data->token->id;
 
@@ -415,7 +415,7 @@ class OrderController extends AbstractController
         }
 
         if ($amount <= 0){
-            return customError(500, 'Anormal amount');
+            return $this->customError(500, 'Anormal amount');
         }
 
         \Stripe\Stripe::setApiKey("sk_test_3xhumvzEnBe3JnTJeFS7u67i");
