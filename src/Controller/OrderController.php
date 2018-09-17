@@ -426,8 +426,22 @@ class OrderController extends AbstractController
             'receipt_email' => $session->get('order')->getEmail(),
         ]);
 
+        // $charge->paid === true
+        // $charge->status === 'succeeded'
+        // $charge->outcome->seller_message === 'Payment complete.'
+        if($charge->paid === true) {
+            $order->setIsPaid(true);
+            $entityManager->persist($order);
+            $entityManager->flush();
+            $session->invalidate();
+        }
+
+
+
         return $this->json(array(
-            'charge' => $charge
+            'paid' => $charge->paid,
+            'email' => $charge->receipt_email,
+            'message' => "Commande passée avec succès"
         ));
     }
 

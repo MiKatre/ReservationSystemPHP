@@ -59,6 +59,11 @@ class Order
      */
     private $date;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isPaid = false;
+
 
     public function __construct()
     {
@@ -157,6 +162,18 @@ class Order
     public function setDate(\DateTimeInterface $date): self
     {
         $this->date = $date;
+
+        return $this;
+    }
+
+    public function getIsPaid(): ?bool
+    {
+        return $this->isPaid;
+    }
+
+    public function setIsPaid(bool $isPaid): self
+    {
+        $this->isPaid = $isPaid;
 
         return $this;
     }
