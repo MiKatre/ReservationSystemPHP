@@ -41,7 +41,7 @@ export const addTicket = async ticket => {
 export const removeTicket = async id => {
   try {
     const options = {
-      method: 'POST',
+      method: 'DELETE',
       headers: {
         'Content-Type': 'application/json'
       },
@@ -59,13 +59,7 @@ export const removeTicket = async id => {
 
 export const fetchTickets = async () => {
   try {
-    const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-    }
-    const response = await fetch(`${root}get_tickets`, options);
+    const response = await fetch(`${root}get_tickets`, {method:'GET'});
     const result = await response.json()
 
     return result

@@ -149,7 +149,7 @@ class OrderController extends AbstractController
     }
 
     /**
-     * @Route("/api/get_tickets", name="api_get_tickets", methods={"POST"})
+     * @Route("/api/get_tickets", name="api_get_tickets", methods={"GET"})
      */
     public function getTickets(SessionInterface $session) {
         $entityManager = $this->getDoctrine()->getManager();
@@ -166,8 +166,8 @@ class OrderController extends AbstractController
                 'firstName' => $singleTicket->getFirstName(),
                 'lastName' => $singleTicket->getLastName(),
                 'dateOfBirth' => $dateOfBirth,
-                'price' => $this->getPrice($dateOfBirth, $singleTicket->getDiscount())->price,
-                'priceName' => $this->getPrice($dateOfBirth, $singleTicket->getDiscount())->name,
+                'price' => $this->getPrice($dateOfBirth, $singleTicket->getDiscount(), $singleTicket->getIsFullDay())->price,
+                'priceName' => $this->getPrice($dateOfBirth, $singleTicket->getDiscount(), $singleTicket->getIsFullDay())->name,
                 'isFullDay' => $singleTicket->getIsFullDay(),
             ];
             $tickets[] = $object;
@@ -287,7 +287,7 @@ class OrderController extends AbstractController
     }
 
     /**
-     * @Route("/api/remove_ticket", name="api_remove_ticket", methods={"POST"})
+     * @Route("/api/remove_ticket", name="api_remove_ticket", methods={"DELETE"})
      */
     public function removeTicket(Request $request, SessionInterface $session) {
 
