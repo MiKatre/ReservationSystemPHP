@@ -1,5 +1,5 @@
 import React from 'react'
-
+import {pay} from '../api'
 import {
   CardNumberElement,
   CardExpiryElement,
@@ -45,12 +45,22 @@ const createOptions = (fontSize, padding) => {
 };
 
 class _SplitForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  async sendToken(payload) {
+    const response = await pay(payload)
+    console.log(response)
+  }
+
   handleSubmit(ev) {
     ev.preventDefault();
     if (this.props.stripe) {
       this.props.stripe
         .createToken()
-        .then((payload) => console.log('[token]', payload));
+        .then((payload) => this.sendToken(payload));
     } else {
       console.log("Stripe.js hasn't loaded yet.");
     }
@@ -99,7 +109,7 @@ class _SplitForm extends React.Component {
             </label>
           </Col>
         </Row>
-        <Button type="primary" >Payer</Button>
+        <Button type="primary" htmlType="submit" >Payer</Button>
       </form>
     );
   }

@@ -75,7 +75,24 @@ export const fetchTickets = async () => {
   }
 }
 
+export const pay = async token => {
+  try {
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(token),
+    }
+    const response = await fetch(`${root}pay`, options)
+    const result = await response.json()
 
+    return result
+
+  } catch(err) {
+    console.log(err)
+  }
+}
 
 
 

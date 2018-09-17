@@ -308,10 +308,64 @@ class OrderController extends AbstractController
     }
 
     public function remainingTickets(Request $request) {
-        // Make sure the request is valid and contains a valid date
-        // Else return an errorMessage
-        // Extract the date from the request
-        // Ask the db for the remaining tickets for that date
-        // Return remaining tickets
+    /**
+     * @Route("/api/pay", name="api_pay", methods={"POST"})
+     */
+    public function pay(Request $request, SessionInterface $session){
+
+        if ($request->getContentType() != 'json' || !$request->getContent())
+            return customError(500, 'Mauvais format de données. JSON attendu.');
+
+        $data = json_decode($request->getContent());
+
+        if (!isset($data->token) || empty($data->token))
+            return customError(500, 'No token received');
+
+        if (!isset($data->token->id) || empty($data->token->id))
+            return customError(500, 'Payload received without id');
+
+        $token = $data->token->id;
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $order = $entityManager
+            ->getRepository(Order::class)
+            ->find($session->get('order')->getId());
+
+        $tickets = $order->getTickets();
+
+        $amount = 0;
+
+        foreach($tickets as $ticket) {
+            $amount = $amount + $ticket->getPrice();
+        }
+
+        if ($amount <= 0){
+            return customError(500, 'Anormal amount');
+        }
+
+        \Stripe\Stripe::setApiKey("sk_test_3xhumvzEnBe3JnTJeFS7u67i");
+
+        $charge = \Stripe\Charge::create([
+            'amount' => $amount,
+            'currency' => 'eur',
+            'source' => $token,
+            'receipt_email' => $session->get('order')->getEmail(),
+        ]);
+
+        return $this->json(array(
+            'charge' => $charge
+        ));
+    }
+
+    public function customError($statusCode, $message) {
+        $error = new Response();
+        $error->setContent($message);
+        $error->setStatusCode( (int) $statusCode);
+        return $error;
+    }
+
+    // helper function that check if selected date is available
+    public function validateDate(\DateTime $date) {
+
     }
 }
