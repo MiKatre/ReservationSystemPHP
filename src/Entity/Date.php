@@ -17,8 +17,42 @@ class Date
      */
     private $id;
 
+    /**
+     * @ORM\Column(type="date")
+     */
+    private $date;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $nbOfTickets;
+
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getDate(): ?\DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    public function setDate(\DateTimeInterface $date): self
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    public function getNbOfTickets(): ?int
+    {
+        return $this->nbOfTickets;
+    }
+
+    public function setNbOfTickets(int $nbOfTickets): self
+    {
+        $this->nbOfTickets = $nbOfTickets;
+
+        return $this;
     }
 }
