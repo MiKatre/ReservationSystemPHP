@@ -25,6 +25,10 @@ const handleReady = () => {
   console.log('[ready]');
 };
 
+const expirationError = 'invalid_expiry_year_past'
+const cvcError = 'incomplete_cvc'
+const cardNumberError = 'incorrect_number'
+
 const createOptions = (fontSize, padding) => {
   return {
     style: {
@@ -38,7 +42,7 @@ const createOptions = (fontSize, padding) => {
         // padding,
       },
       invalid: {
-        color: '#9e2146',
+        color: '#dc3545',
       },
     },
   };
@@ -47,10 +51,40 @@ const createOptions = (fontSize, padding) => {
 class _SplitForm extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      expirationError: null,
+      cvcError: null,
+      cardNumberError: null,
+    }
+
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  wipeState() {
+    this.setState({
+      expirationError: null,
+      cvcError: null,
+      cardNumberError: null,
+    })
+  }
+
   async sendToken(payload) {
+    this.wipeState()
+
+    if (payload.token === undefined) {
+      if (payload.error.code === expirationError) 
+        this.setState({expirationError: payload.error.message})
+        
+      if (payload.error.code === cvcError) 
+        this.setState({cvcError: payload.error.message})
+
+      if (payload.error.code === cardNumberError) 
+        this.setState({cardNumberError: payload.error.message})
+
+      return
+    }
+
+    // If no errors, PAY
     const response = await pay(payload)
     if (response.paid) {
       this.props.handleSubmit(response.message)
@@ -84,35 +118,42 @@ class _SplitForm extends React.Component {
                 className="form-control"
                 {...createOptions(this.props.fontSize)}
               />
+            <span className="text-danger">{typeof this.state.cardNumberError === 'string' && this.state.cardNumberError}</span>
           </Col>
         </Row>
         <Row>
           <Col md="6">
-            <label className="stripe-label">
+            <Label for="expiry-element" className="stripe-label mt-3">
               Date d'expiration
-              <CardExpiryElement
-                onBlur={handleBlur}
-                onChange={handleChange}
-                onFocus={handleFocus}
-                onReady={handleReady}
-                {...createOptions(this.props.fontSize)}
-              />
-            </label>
+            </Label>
+            <CardExpiryElement
+              id="expiry-element"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              onFocus={handleFocus}
+              onReady={handleReady}
+              {...createOptions(this.props.fontSize)}
+            />
+            
+            <span className="text-danger">{typeof this.state.expirationError === 'string' && this.state.expirationError}</span>
           </Col>
           <Col md="4">
-            <label className="stripe-label">
+            <Label for="cvc-element" className="stripe-label mt-3">
               Cryptogramme visuel
-              <CardCVCElement
-                onBlur={handleBlur}
-                onChange={handleChange}
-                onFocus={handleFocus}
-                onReady={handleReady}
-                {...createOptions(this.props.fontSize)}
-              />
-            </label>
+            </Label>
+            <CardCVCElement
+              id="cvc-element"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              onFocus={handleFocus}
+              onReady={handleReady}
+              {...createOptions(this.props.fontSize)}
+            />
+            
+            <span className="text-danger">{typeof this.state.cvcError === 'string' && this.state.cvcError}</span>
           </Col>
         </Row>
-        <Button type="primary" htmlType="submit" >Payer</Button>
+        <Button type="primary" htmlType="submit" className="mt-3">Payer</Button>
       </form>
     );
   }

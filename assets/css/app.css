@@ -111,6 +111,9 @@ input,
 /* input::placeholder {
     color: #aab7c4;
 } */
+.StripeElement {
+    margin: 0 !important;
+}
 
 input:focus,
 .StripeElement--focus {
