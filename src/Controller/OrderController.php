@@ -12,6 +12,7 @@ namespace App\Controller;
 use App\Entity\Order;
 use App\Entity\Price;
 use App\Entity\Ticket;
+use App\Entity\Date;
 use App\Repository\OrderRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -58,6 +59,7 @@ class OrderController extends AbstractController
 //        $ticket->setOrderRelation($order);
 
         $order->addTicket($ticket);
+
 
         //$entityManager->persist($order);
 
@@ -203,7 +205,7 @@ class OrderController extends AbstractController
         $ticket->setLastName($data->lastName);
         $ticket->setDateOfBirth($dateOfBirth);
         $ticket->setDiscount($data->discount);
-        $ticket->setPrice($this->getPrice($dateOfBirth, $data->discount)->price);
+        $ticket->setPrice($this->getPrice($dateOfBirth, $data->discount, $data->isFullDay )->price);
         $ticket->setIsFullDay($data->isFullDay);
 
         $order->addTicket($ticket);
@@ -235,8 +237,8 @@ class OrderController extends AbstractController
                 'firstName' => $singleTicket->getFirstName(),
                 'lastName' => $singleTicket->getLastName(),
                 'dateOfBirth' => $dateOfBirth,
-                'price' => $this->getPrice($dateOfBirth, $singleTicket->getDiscount())->price,
-                'priceName' => $this->getPrice($dateOfBirth, $singleTicket->getDiscount())->name,
+                'price' => $this->getPrice($dateOfBirth, $singleTicket->getDiscount(), $singleTicket->getIsFullDay())->price,
+                'priceName' => $this->getPrice($dateOfBirth, $singleTicket->getDiscount(), $singleTicket->getIsFullDay())->name,
                 'isFullDay' => $singleTicket->getIsFullDay(),
             ];
             $tickets[] = $object;
@@ -254,19 +256,33 @@ class OrderController extends AbstractController
         return (int) ($diff->format('%y'));
     }
 
-    private function getPrice($dateOfBirth, $discount) {
+    private function getPrice($dateOfBirth, $discount, $isFullDay) {
         $age = (int) $this->getAge($dateOfBirth);
+
         // à partir de 12 ans
-        $normal = (object) ['price' => 1600, 'name' => 'Normal'];
+        $normal = (object) ['price' => Ticket::NORMAL_PRICE, 'name' => 'Normal'];
         // de 4 à 12 ans
-        $children = (object) ['price' => 800, 'name' => 'Enfant'];
+        $children = (object) ['price' => Ticket::CHILDREN_PRICE, 'name' => 'Enfant'];
         // à partir de 60 ans
-        $senior = (object) ['price' => 1200, 'name' => 'Senior'];
+        $senior = (object) ['price' => Ticket::SENIOR_PRICE, 'name' => 'Senior'];
         // Moins de 4 ans
-        $free = (object) ['price' => 0, 'name' => 'Enfant'];
+        $baby = (object) ['price' => Ticket::BABY_PRICE, 'name' => 'Enfant'];
 
+        if ($age >= 4 && $age <= 12)
+            $formula = $children;
+        else if($age >= 60)
+            $formula = $senior;
+        else if($age < 4 )
+            $formula = $baby;
+        else
+            $formula = $normal;
 
-        return ($age >= 4 && $age <= 12 ? ($children) : ($age >= 60 ? ($senior) : ($age < 4 ? ($free) : ($normal))));
+        if ($formula->price > 0) {
+            $formula->price = $isFullDay ? $formula->price : $formula->price * Ticket::HALF_DAY_DISCOUNT_PERCENT;
+            $formula->price = $discount ? $formula->price - ($formula->price * Ticket::DISCOUNT_PERCENT) : $formula->price;
+        }
+
+        return $formula;
     }
 
     /**
@@ -427,3 +443,6 @@ class OrderController extends AbstractController
 
     }
 }
+
+
+//return JsonResponse::fromJsonString($request->getContent());

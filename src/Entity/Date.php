@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Date
 {
+    const MAX_TICKETS_PER_DAY = 2000;
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
