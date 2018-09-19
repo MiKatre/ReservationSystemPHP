@@ -11,6 +11,7 @@
 
 {% block body %}
     {{ parent() }}
+
     <div class="header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
         <h1 class="display-4">Billetterie</h1>
         <p class="lead">Commandez vos entrées en un clin d’œil grâce à ce formulaire interactif. Laissez-vous guider ! Vous recevrez un e-mail avec vos tickets et toutes les informations de votre achat.</p>
@@ -19,6 +20,12 @@
     <div class="text-center">
         <a href="form" class="btn btn-link mx-auto">Commander &#8594;</a>
     </div>
+
+
+    <div class="text-center mt-5">
+        <img src="{{ asset('img/logo_louvre.png') }}" width="200">
+    </div>
+
 {% endblock %}
 
 
