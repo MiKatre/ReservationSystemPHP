@@ -60,6 +60,11 @@ class Ticket
      */
     private $isFullDay;
 
+    /**
+     * @ORM\Column(type="string", length=60)
+     */
+    private $country;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -145,6 +150,18 @@ class Ticket
     public function setIsFullDay(bool $isFullDay): self
     {
         $this->isFullDay = $isFullDay;
+
+        return $this;
+    }
+
+    public function getCountry(): ?string
+    {
+        return $this->country;
+    }
+
+    public function setCountry(string $country): self
+    {
+        $this->country = $country;
 
         return $this;
     }

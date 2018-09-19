@@ -212,6 +212,7 @@ class OrderController extends AbstractController
         $ticket->setDiscount($data->discount);
         $ticket->setPrice($price->getPriceHT($dateOfBirth, $data->discount, $data->isFullDay )->price);
         $ticket->setIsFullDay($data->isFullDay);
+        $ticket->setCountry($data->country);
 
         $order->addTicket($ticket);
 
