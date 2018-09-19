@@ -10,7 +10,7 @@ import {
 } from 'react-stripe-elements'
 
 import {Button} from 'antd'
-import {Label, Row, Col} from 'reactstrap'
+import {Label, Row, Col, Spin} from 'reactstrap'
 
 const handleBlur = () => {
   console.log('[blur]');
@@ -55,6 +55,7 @@ class _SplitForm extends React.Component {
       expirationError: null,
       cvcError: null,
       cardNumberError: null,
+      loading: false,
     }
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -81,11 +82,14 @@ class _SplitForm extends React.Component {
       if (payload.error.code === cardNumberError) 
         this.setState({cardNumberError: payload.error.message})
 
+      this.props.setLoading(false)
       return
     }
 
     // If no errors, PAY
     const response = await pay(payload)
+    this.props.setLoading(false)
+
     if (response.paid) {
       this.props.handleSubmit(response.message)
     }
@@ -97,14 +101,19 @@ class _SplitForm extends React.Component {
     if (this.props.stripe) {
       this.props.stripe
         .createToken()
-        .then((payload) => this.sendToken(payload));
+        .then((payload) => {
+          this.props.setLoading(true)
+          this.sendToken(payload)
+        });
     } else {
+      this.props.setLoading(false)
       console.log("Stripe.js hasn't loaded yet.");
     }
   };
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
+    <form onSubmit={this.handleSubmit}>
+
         <Row>
           <Col md="6">
             <Label for="cardNumber" className="stripe-label">
@@ -154,6 +163,7 @@ class _SplitForm extends React.Component {
           </Col>
         </Row>
         <Button type="primary" htmlType="submit" className="mt-3">Payer</Button>
+
       </form>
     );
   }
@@ -186,7 +196,7 @@ export default class Checkout extends React.Component {
         <h4 className="mb-3">Paiement</h4>
         <div className="form-container">
           <Elements>
-            <SplitForm fontSize={elementFontSize} handleSubmit={this.props.handleSubmit}/>
+            <SplitForm fontSize={elementFontSize} handleSubmit={this.props.handleSubmit} setLoading={this.props.setLoading}/>
           </Elements>
         </div>
       </div>

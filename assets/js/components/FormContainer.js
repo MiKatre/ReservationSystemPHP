@@ -13,7 +13,7 @@ import {handleOrder, addTicket, removeTicket, fetchTickets, fetchRemainingTicket
 
 import {StripeProvider} from 'react-stripe-elements'
 import {Container, Row, Col} from 'reactstrap'
-import {message, Button} from 'antd';
+import {message, Button, Spin} from 'antd';
 
 
 export default class FormContainer extends React.Component {
@@ -34,6 +34,8 @@ export default class FormContainer extends React.Component {
       showForm: 1, 
       loading: false,
     }
+    this.setLoading = this.setLoading.bind(this);
+
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleDayChange = this.handleDayChange.bind(this);
@@ -54,6 +56,10 @@ export default class FormContainer extends React.Component {
 
   componentDidMount() {
 
+  }
+
+  setLoading(isLoading) {
+    this.setState({loading: isLoading})
   }
 
 
@@ -218,7 +224,7 @@ export default class FormContainer extends React.Component {
     } else if (this.state.showForm === 3) {
       form = (
         <StripeProvider apiKey="pk_test_OFwnhpsnI4Xwml5cxOzWH6UX">
-          <FormThree {...this.state} handleSubmit={this.handleSubmitFormThree} />
+          <FormThree {...this.state} handleSubmit={this.handleSubmitFormThree} setLoading={this.setLoading}/>
         </StripeProvider>
       )
       show = 3
@@ -249,7 +255,9 @@ export default class FormContainer extends React.Component {
               </Col>
             
               <Col md={{ size: 8, order: 1, offset: show === 2 ? 0 : 2 }} style={animation.classic}>
+              <Spin spinning={this.state.loading}>
                 {form}
+              </Spin>
               </Col>
             </Row>
           </Container>
