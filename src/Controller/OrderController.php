@@ -1,19 +1,13 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: MDP
- * Date: 09/08/2018
- * Time: 20:42
- */
 
 namespace App\Controller;
-
 
 use App\Entity\Order;
 use App\Entity\Price;
 use App\Entity\Ticket;
 use App\Entity\Date;
 use App\Repository\OrderRepository;
+use App\Utils\DateControl;
 use App\Utils\PriceControl;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,45 +24,32 @@ class OrderController extends AbstractController
      * @Route("/", name="site_homepage")
      */
     public function homepage(SessionInterface $session) {
-
         $session->start();
+        return $this->render('commande/homepage.html.twig');
+    }
 
-        $entityManager = $this->getDoctrine()->getManager();
+    /**
+     * @Route("/api/allow_full_day", name="api_allow_full_day")
+     */
+    public function allowFullDay(SessionInterface $session){
+        date_default_timezone_set('Europe/Paris');
+        $order = $this->getDoctrine()->getManager()
+            ->getRepository(Order::class)
+            ->find($session->get('order')->getId());
 
-        $price = $entityManager
-            ->getRepository('App:Price')
-            ->find(1);
-
-//        $price = new Price();
-//        $price->setName('kid');
-//        $price->setPrice(300);
-        $date = date('m/d/Y h:i:s a', time());
-
-        $order = new Order();
-        $order->setFirstName('Pauline');
-        $order->setLastName('Alg');
-        $order->setEmail('pauline.algebra@organisation.org');
-        $order->setReservationCode('X06h71k');
-        $order->setDate(new \DateTime("10-10-1990"));
-
-        $ticket = new Ticket();
-        $ticket->setFirstName('Pauline');
-        $ticket->setLastName('Algebra');
-        $ticket->setDateOfBirth(new \DateTime("10-10-1990"));
-        $ticket->setDiscount(true);
-        $ticket->setPrice($price->getPrice());
-//        $ticket->setOrderRelation($order);
-
-        $order->addTicket($ticket);
+        $today = new \DateTime();
+        $today->setTime( 0, 0, 0 );
 
 
-        //$entityManager->persist($order);
+        $selectedDay =new \DateTime($order->getDate()->format('Ymd'));
+        $selectedDay->setTime( 0, 0, 0 );
 
+        $isToday = $today->getTimestamp() === $selectedDay->getTimestamp();
 
+        return $this->json(array(
+            'allowFullDay' => date('H') < 14,
+        ));
 
-        //$entityManager->flush();
-
-        return $this->render('commande/homepage.html.twig', array('order' => $order));
     }
 
     /**
@@ -92,7 +73,7 @@ class OrderController extends AbstractController
     /**
      * @Route("/api/create_order", name="api_create_order", methods={"POST"})
      */
-    public function createOrder(Request $request, ValidatorInterface $validator, SessionInterface $session) {
+    public function createOrder(Request $request, ValidatorInterface $validator, SessionInterface $session, DateControl $dateControl) {
 
        if ($request->getContentType() != 'json' || !$request->getContent()) {
            $error = new Response();
@@ -114,7 +95,14 @@ class OrderController extends AbstractController
         $order->setFirstName($data->firstName);
         $order->setLastName($data->lastName);
         $order->setEmail($data->email);
+
+        if (!$dateControl->isDateValid(new \DateTime($data->date))){
+            return $this->customError(500, "Date invalide");
+        }
+
         $order->setDate(new \DateTime($data->date));
+
+        // var_dump($dateControl->isDateValid(new \DateTime($order->getDate())));
 
         // If we are creating a new order
         if (!$session->has('order')) {
@@ -260,39 +248,6 @@ class OrderController extends AbstractController
         ));
     }
 
-    private function getAge($dateOfBirth) {
-        $diff = $dateOfBirth->diff(new \DateTime());
-        return (int) ($diff->format('%y'));
-    }
-
-    private function getPrice($dateOfBirth, $discount, $isFullDay) {
-        $age = (int) $this->getAge($dateOfBirth);
-
-        // à partir de 12 ans
-        $normal = (object) ['price' => Ticket::NORMAL_PRICE, 'name' => 'Normal'];
-        // de 4 à 12 ans
-        $children = (object) ['price' => Ticket::CHILDREN_PRICE, 'name' => 'Enfant'];
-        // à partir de 60 ans
-        $senior = (object) ['price' => Ticket::SENIOR_PRICE, 'name' => 'Senior'];
-        // Moins de 4 ans
-        $baby = (object) ['price' => Ticket::BABY_PRICE, 'name' => 'Enfant'];
-
-        if ($age >= 4 && $age <= 12)
-            $formula = $children;
-        else if($age >= 60)
-            $formula = $senior;
-        else if($age < 4 )
-            $formula = $baby;
-        else
-            $formula = $normal;
-
-        if ($formula->price > 0) {
-            $formula->price = $isFullDay ? $formula->price : $formula->price * Ticket::HALF_DAY_DISCOUNT_PERCENT;
-            $formula->price = $discount ? $formula->price - ($formula->price * Ticket::DISCOUNT_PERCENT) : $formula->price;
-        }
-
-        return $formula;
-    }
 
     /**
      * @Route("/api/remove_ticket", name="api_remove_ticket", methods={"DELETE"})
@@ -438,7 +393,6 @@ class OrderController extends AbstractController
             $order->setIsPaid(true);
             $entityManager->persist($order);
             $entityManager->flush();
-            $session->invalidate();
         }
 
         $this->sendEmail($order, $tickets, $mailer, $price, $session); //TicketBilled
