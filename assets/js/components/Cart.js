@@ -2,7 +2,7 @@ import React from 'react'
 import { Popconfirm } from 'antd';
 import {getRate} from '../helpers'
 
-const Cart = ({tickets, handleRemoveTicket}) => {
+const Cart = ({tickets, handleRemoveTicket, totalTTC = 0, totalHT = 0, TVA = 0.2}) => {
 
 	let total = 0
 
@@ -33,8 +33,16 @@ const Cart = ({tickets, handleRemoveTicket}) => {
 		<ul className="list-group mb-3" >
 			{ticketList}
 			<li className="list-group-item d-flex justify-content-between">
-				<span>Total (EUR)</span>
-				<strong>{total}€</strong>
+				<span>Total HT (EUR)</span>
+				<strong>{totalHT / 100}€</strong>
+			</li>
+			<li className="list-group-item d-flex justify-content-between">
+				<span>TVA</span>
+				<strong>{TVA * 100}%</strong>
+			</li>
+			<li className="list-group-item d-flex justify-content-between">
+				<span>Total TTC (EUR)</span>
+				<strong>{totalTTC / 100}€</strong>
 			</li>
 		</ul>
 	</div>

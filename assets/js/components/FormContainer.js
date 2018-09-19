@@ -146,6 +146,9 @@ export default class FormContainer extends React.Component {
     this.setState({
       // tickets: [...this.state.tickets, ticket],
       tickets: result.tickets,
+      totalHT: result.totalHT,
+      totalTTC: result.totalTTC,
+      TVA: result.TVA,
     })
     console.log(this.state.tickets)
     message.success(result.message);
@@ -161,6 +164,9 @@ export default class FormContainer extends React.Component {
 
     this.setState({
       tickets: result.tickets,
+      totalHT: result.totalHT,
+      totalTTC: result.totalTTC,
+      TVA: result.TVA,
     })
   }
 
@@ -230,7 +236,13 @@ export default class FormContainer extends React.Component {
           <Container>
             <Row >
               <Col md={{ size: 4, order: 2 }} style={ show === 2 ? animation.delayed : hide} className="mb-4" >
-                <Cart tickets={this.state.tickets} handleRemoveTicket={this.handleRemoveTicket}/>
+                <Cart 
+                tickets={this.state.tickets} 
+                handleRemoveTicket={this.handleRemoveTicket}
+                totalHT={this.state.totalHT}
+                totalTTC={this.state.totalTTC}
+                TVA={this.state.TVA}
+                />
                 <div className="text-center">
                     <Button type="primary" disabled={this.state.tickets.length === 0} onClick={this.handleSubmitFormTwo} > Commander &#8594;</Button>
                 </div>

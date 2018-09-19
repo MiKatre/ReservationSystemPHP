@@ -14,6 +14,7 @@ use App\Entity\Price;
 use App\Entity\Ticket;
 use App\Entity\Date;
 use App\Repository\OrderRepository;
+use App\Utils\PriceControl;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -151,7 +152,7 @@ class OrderController extends AbstractController
     /**
      * @Route("/api/get_tickets", name="api_get_tickets", methods={"GET"})
      */
-    public function getTickets(SessionInterface $session) {
+    public function getTickets(SessionInterface $session, PriceControl $price) {
         $entityManager = $this->getDoctrine()->getManager();
         $order = $entityManager
             ->getRepository(Order::class)
@@ -166,8 +167,8 @@ class OrderController extends AbstractController
                 'firstName' => $singleTicket->getFirstName(),
                 'lastName' => $singleTicket->getLastName(),
                 'dateOfBirth' => $dateOfBirth,
-                'price' => $this->getPrice($dateOfBirth, $singleTicket->getDiscount(), $singleTicket->getIsFullDay())->price,
-                'priceName' => $this->getPrice($dateOfBirth, $singleTicket->getDiscount(), $singleTicket->getIsFullDay())->name,
+                'price' => $price->getPriceHT($dateOfBirth, $singleTicket->getDiscount(), $singleTicket->getIsFullDay())->price,
+                'priceName' => $price->getPriceHT($dateOfBirth, $singleTicket->getDiscount(), $singleTicket->getIsFullDay())->name,
                 'isFullDay' => $singleTicket->getIsFullDay(),
             ];
             $tickets[] = $object;
@@ -175,13 +176,16 @@ class OrderController extends AbstractController
         return $this->json(array(
             'success' => true,
             'tickets' => $tickets,
+            'totalHT' => $price->getTotalHT($order->getTickets()),
+            'totalTTC' => $price->getTotalTTC($order->getTickets()),
+            'TVA' => PriceControl::TVA,
         ));
     }
 
     /**
      * @Route("/api/add_ticket", name="api_add_ticket", methods={"POST"})
      */
-    public function addTicket(Request $request, ValidatorInterface $validator, SessionInterface $session){
+    public function addTicket(Request $request, ValidatorInterface $validator, SessionInterface $session, PriceControl $price){
         // Return errorMessage or success message with the id
 
         if ($request->getContentType() != 'json' || !$request->getContent()) {
@@ -206,7 +210,7 @@ class OrderController extends AbstractController
         $ticket->setLastName($data->lastName);
         $ticket->setDateOfBirth($dateOfBirth);
         $ticket->setDiscount($data->discount);
-        $ticket->setPrice($this->getPrice($dateOfBirth, $data->discount, $data->isFullDay )->price);
+        $ticket->setPrice($price->getPriceHT($dateOfBirth, $data->discount, $data->isFullDay )->price);
         $ticket->setIsFullDay($data->isFullDay);
 
         $order->addTicket($ticket);
@@ -238,8 +242,8 @@ class OrderController extends AbstractController
                 'firstName' => $singleTicket->getFirstName(),
                 'lastName' => $singleTicket->getLastName(),
                 'dateOfBirth' => $dateOfBirth,
-                'price' => $this->getPrice($dateOfBirth, $singleTicket->getDiscount(), $singleTicket->getIsFullDay())->price,
-                'priceName' => $this->getPrice($dateOfBirth, $singleTicket->getDiscount(), $singleTicket->getIsFullDay())->name,
+                'price' => $price->getPriceHT($dateOfBirth, $singleTicket->getDiscount(), $singleTicket->getIsFullDay())->price,
+                'priceName' => $price->getPriceHT($dateOfBirth, $singleTicket->getDiscount(), $singleTicket->getIsFullDay())->name,
                 'isFullDay' => $singleTicket->getIsFullDay(),
             ];
             $tickets[] = $object;
@@ -248,6 +252,9 @@ class OrderController extends AbstractController
         return $this->json(array(
             'success' => true,
             'tickets' => $tickets,
+            'totalHT' => $price->getTotalHT($order->getTickets()),
+            'totalTTC' => $price->getTotalTTC($order->getTickets()),
+            'TVA' => PriceControl::TVA,
             'message' => 'Billet ajouté',
         ));
     }
@@ -386,7 +393,7 @@ class OrderController extends AbstractController
     /**
      * @Route("/api/pay", name="api_pay", methods={"POST"})
      */
-    public function pay(Request $request, SessionInterface $session){
+    public function pay(Request $request, SessionInterface $session, \Swift_Mailer $mailer, PriceControl $price){
 
         if ($request->getContentType() != 'json' || !$request->getContent())
             return $this->customError(500, 'Mauvais format de données. JSON attendu.');
@@ -408,11 +415,7 @@ class OrderController extends AbstractController
 
         $tickets = $order->getTickets();
 
-        $amount = 0;
-
-        foreach($tickets as $ticket) {
-            $amount = $amount + $ticket->getPrice();
-        }
+        $amount = $price->getTotalTTC($tickets);
 
         if ($amount <= 0){
             return $this->customError(500, 'Anormal amount');
