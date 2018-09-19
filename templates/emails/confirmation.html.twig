@@ -1,0 +1,27 @@
+<h3>Musée du louvre</h3>
+
+<p>Bonjour <strong>{{ order.firstName }} {{ order.lastName }}!</strong> </p>
+
+<p>Voici vos entrées pour le <strong>{{ order.date|date("d/m/Y") }}</strong></p>
+
+<p>Votre code de réservation est  <strong>{{ order.reservationCode }} </strong></p>
+
+{% for ticket in tickets %}
+    <div style="border: 1px dashed black; margin-bottom: 10px">
+
+        <h3>Billet de {{ ticket.firstName }} {{ ticket.lastName }}</h3>
+        <p>{% if ticket.isFullDay %} Journée complète {% else %} Demi-journée {% endif %}</p>
+        <p> <em> Valable seulement le {{ order.date|date("d/m/Y") }}  </em></p>
+        {% if ticket.discount %}
+            <p> Vous avez choisi le tarif réduit. Veillez à emporter les documents nécéssaires. </p>
+        {% endif %}
+    </div>
+{% endfor %}
+
+<p>Le montant total de la commande est de <strong>{{ totalTTC / 100 }}€ TTC </strong> </p>
+
+<p>
+    {# Makes an absolute URL to the /images/logo.png file #}
+    {#<img src="{{ absolute_url(asset('img/logo_louvre.png')) }}">#}
+    <img src="https://www.louvre.fr/sites/all/themes/louvre/img/data/logo-louvre.jpg">
+</p>

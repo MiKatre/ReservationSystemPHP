@@ -437,7 +437,7 @@ class OrderController extends AbstractController
             $session->invalidate();
         }
 
-
+        $this->sendEmail($order, $tickets, $mailer, $price, $session); //TicketBilled
 
         return $this->json(array(
             'paid' => $charge->paid,
@@ -453,9 +453,38 @@ class OrderController extends AbstractController
         return $error;
     }
 
-    // helper function that check if selected date is available
-    public function validateDate(\DateTime $date) {
+    private function sendEmail(Order $order, $tickets, \Swift_Mailer $mailer, PriceControl $price, SessionInterface $session) {
+        $message = (new \Swift_Message('Hello Email'))
+            ->setFrom('send@example.com')
+            ->setTo($order->getEmail())
+            ->setBody(
+                $this->renderView(
+                // templates/emails/registration.html.twig
+                    'emails/confirmation.html.twig', array(
+                        'order' => $order,
+                        'tickets' => $tickets,
+                        'totalHT' => $price->getTotalHT($order->getTickets()),
+                        'totalTTC' => $price->getTotalTTC($order->getTickets()),
+                        'TVA' => PriceControl::TVA,
+                    )
+                ),
+                'text/html'
+            )
+            /*
+             * If you also want to include a plaintext version of the message
+            ->addPart(
+                $this->renderView(
+                    'emails/registration.txt.twig',
+                    array('name' => $name)
+                ),
+                'text/plain'
+            )
+            */
+        ;
 
+        $mailer->send($message);
+        $session->invalidate();
+        return 0;
     }
 }
 
