@@ -29,7 +29,7 @@ class OrderController extends AbstractController
     }
 
     /**
-     * @Route("/api/allow_full_day", name="api_allow_full_day")
+     * @Route("/api/allow_full_day", name="api_allow_full_day", methods={"GET"})
      */
     public function allowFullDay(SessionInterface $session){
         date_default_timezone_set('Europe/Paris');
@@ -445,6 +445,3 @@ class OrderController extends AbstractController
         return 0;
     }
 }
-
-
-//return JsonResponse::fromJsonString($request->getContent());

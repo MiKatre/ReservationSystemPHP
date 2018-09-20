@@ -57,6 +57,17 @@ export const removeTicket = async id => {
   }
 }
 
+export const fetchAllowFullDay = async () => {
+  try {
+    const response = await fetch(`${root}allow_full_day`, {method:'GET'});
+    const result = await response.json()
+
+    return result
+  } catch(err) {
+    console.log(err)
+  }
+}
+
 export const fetchTickets = async () => {
   try {
     const response = await fetch(`${root}get_tickets`, {method:'GET'});

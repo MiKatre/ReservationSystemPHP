@@ -1,5 +1,7 @@
 import React from 'react'
-import {Form, FormGroup, Row, Col, Input, Label, CustomInput, Button, UncontrolledTooltip} from 'reactstrap'
+import {fetchAllowFullDay} from '../api'
+
+import {Form, Row, Col, Input, Label, CustomInput, UncontrolledTooltip} from 'reactstrap'
 import BirthdayPicker from './BirthdayPicker'
 import { formatDate } from 'react-day-picker/moment'
 import posed, { PoseGroup } from 'react-pose';
@@ -34,6 +36,7 @@ class FormTwo extends React.Component {
 			discount: false,
 			country: undefined,
 			showBirthdayPicker: false,
+			allowFullDay: true,
 		}
 		this.handleInputChange = this.handleInputChange.bind(this)
 		this.handleBirthdayFieldClick = this.handleBirthdayFieldClick.bind(this)
@@ -44,6 +47,13 @@ class FormTwo extends React.Component {
 
 	componentDidMount(){
 		this.props.getTickets()
+		this.getAllowFullDay()
+	}
+
+	async getAllowFullDay(){
+		const result = await fetchAllowFullDay()
+		console.log(result);
+		if (result.allowFullDay === false) this.setState({allowFullDay: result.allowFullDay})
 	}
 
 	handleBirthdayFieldClick(){
@@ -165,7 +175,7 @@ class FormTwo extends React.Component {
 								<Label for="isFullDay" className="mt-3">Type de billet</Label> <i className="fas fa-info-circle" style={{color: '#757575'}}></i>
 								<br/>
 								<RadioGroup onChange={this.handleInputChange} className="mb-3" name="isFullDay">
-									<RadioButton value={true} >journée complète</RadioButton>
+									<RadioButton value={true} disabled={!this.state.allowFullDay} >journée complète</RadioButton>
 									<RadioButton value={false} >demi-journée</RadioButton>
 								</RadioGroup>
 
