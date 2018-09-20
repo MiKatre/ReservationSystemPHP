@@ -40,7 +40,6 @@ class OrderController extends AbstractController
         $today = new \DateTime();
         $today->setTime( 0, 0, 0 );
 
-
         $selectedDay =new \DateTime($order->getDate()->format('Ymd'));
         $selectedDay->setTime( 0, 0, 0 );
 
@@ -377,7 +376,7 @@ class OrderController extends AbstractController
             return $this->customError(500, 'Anormal amount');
         }
 
-        \Stripe\Stripe::setApiKey("sk_test_3xhumvzEnBe3JnTJeFS7u67i");
+        \Stripe\Stripe::setApiKey(getenv('stripe_secret_key'));
 
         $charge = \Stripe\Charge::create([
             'amount' => $amount,
