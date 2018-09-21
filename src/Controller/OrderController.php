@@ -51,9 +51,7 @@ class OrderController extends AbstractController
         return $this->json(array(
             'allowFullDay' => date('H') < 14,
         ));
-
     }
-
 
     /**
      * @Route("/api/create_order", name="api_create_order", methods={"POST"})
@@ -82,8 +80,6 @@ class OrderController extends AbstractController
         }
 
         $order->setDate(new \DateTime($data->date));
-
-        // var_dump($dateControl->isDateValid(new \DateTime($order->getDate())));
 
         // If we are creating a new order
         if (!$session->has('order')) {

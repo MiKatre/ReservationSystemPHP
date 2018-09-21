@@ -68,10 +68,8 @@ class PaiementController extends AbstractController
             $entityManager->flush();
         }
 
-        //$event = new GenericEvent($order);
-        //$eventDispatcher->dispatch(Events::ORDER_PLACED, $event);
-
-        $this->sendEmail($order, $tickets, $mailer, $price, $session);
+        $event = new GenericEvent();
+        $eventDispatcher->dispatch(Events::ORDER_PLACED, $event);
 
         return $this->json(array(
             'paid' => $charge->paid,
@@ -79,28 +77,4 @@ class PaiementController extends AbstractController
             'message' => "Commande passée avec succès"
         ));
     }
-
-    
-    private function sendEmail(Order $order, $tickets, \Swift_Mailer $mailer, PriceControl $price, SessionInterface $session) {
-        $message = (new \Swift_Message('Hello Email'))
-            ->setFrom('send@example.com')
-            ->setTo($order->getEmail())
-            ->setBody(
-                $this->renderView(
-                // templates/emails/registration.html.twig
-                    'emails/confirmation.html.twig', array(
-                        'order' => $order,
-                        'tickets' => $tickets,
-                        'totalHT' => $price->getTotalHT($order->getTickets()),
-                        'totalTTC' => $price->getTotalTTC($order->getTickets()),
-                        'TVA' => PriceControl::TVA,
-                    )
-                ),
-                'text/html'
-            );
-        $mailer->send($message);
-        $session->invalidate();
-        return 0;
-    }
-
 }

@@ -16,39 +16,6 @@ use Symfony\Component\Routing\Annotation\Route;
 class TicketController extends AbstractController
 {
     /**
-     * @Route("/api/get_tickets", name="api_get_tickets", methods={"GET"})
-     */
-    public function getTickets(SessionInterface $session, PriceControl $price) {
-        $entityManager = $this->getDoctrine()->getManager();
-        $order = $entityManager
-            ->getRepository(Order::class)
-            ->find($session->get('order')->getId());
-
-        $tickets = [];
-
-        foreach ($order->getTickets() as $singleTicket){
-            $dateOfBirth = $singleTicket->getDateOfBirth();
-            $object = (object) [
-                'id' => $singleTicket->getId(),
-                'firstName' => $singleTicket->getFirstName(),
-                'lastName' => $singleTicket->getLastName(),
-                'dateOfBirth' => $dateOfBirth,
-                'price' => $price->getPriceHT($dateOfBirth, $singleTicket->getDiscount(), $singleTicket->getIsFullDay())->price,
-                'priceName' => $price->getPriceHT($dateOfBirth, $singleTicket->getDiscount(), $singleTicket->getIsFullDay())->name,
-                'isFullDay' => $singleTicket->getIsFullDay(),
-            ];
-            $tickets[] = $object;
-        }
-        return $this->json(array(
-            'success' => true,
-            'tickets' => $tickets,
-            'totalHT' => $price->getTotalHT($order->getTickets()),
-            'totalTTC' => $price->getTotalTTC($order->getTickets()),
-            'TVA' => PriceControl::TVA,
-        ));
-    }
-
-    /**
      * @Route("/api/add_ticket", name="api_add_ticket", methods={"POST"})
      */
     public function addTicket(Request $request, ValidatorInterface $validator, SessionInterface $session, PriceControl $price, ErrorControl $errorControl){
@@ -90,11 +57,11 @@ class TicketController extends AbstractController
             $remainingTickets->setNbOfTickets($remainingTickets->getNbOfTickets() + 1);
         }
 
-
         $entityManager->persist($order);
         $entityManager->persist($remainingTickets);
-
         $entityManager->flush();
+
+        $session->set('tickets', $order->getTickets());
 
         $tickets = [];
 
@@ -163,12 +130,47 @@ class TicketController extends AbstractController
 
         $entityManager->persist($order);
         $entityManager->persist($remainingTickets);
-
+        
         $entityManager->flush();
+
+        $session->set('tickets', $order->getTickets());
 
         return $this->json(array(
             'success' => true,
             'message' => 'Billet supprimé',
+        ));
+    }
+
+    /**
+     * @Route("/api/get_tickets", name="api_get_tickets", methods={"GET"})
+     */
+    public function getTickets(SessionInterface $session, PriceControl $price) {
+        $entityManager = $this->getDoctrine()->getManager();
+        $order = $entityManager
+            ->getRepository(Order::class)
+            ->find($session->get('order')->getId());
+
+        $tickets = [];
+
+        foreach ($order->getTickets() as $singleTicket){
+            $dateOfBirth = $singleTicket->getDateOfBirth();
+            $object = (object) [
+                'id' => $singleTicket->getId(),
+                'firstName' => $singleTicket->getFirstName(),
+                'lastName' => $singleTicket->getLastName(),
+                'dateOfBirth' => $dateOfBirth,
+                'price' => $price->getPriceHT($dateOfBirth, $singleTicket->getDiscount(), $singleTicket->getIsFullDay())->price,
+                'priceName' => $price->getPriceHT($dateOfBirth, $singleTicket->getDiscount(), $singleTicket->getIsFullDay())->name,
+                'isFullDay' => $singleTicket->getIsFullDay(),
+            ];
+            $tickets[] = $object;
+        }
+        return $this->json(array(
+            'success' => true,
+            'tickets' => $tickets,
+            'totalHT' => $price->getTotalHT($order->getTickets()),
+            'totalTTC' => $price->getTotalTTC($order->getTickets()),
+            'TVA' => PriceControl::TVA,
         ));
     }
 
