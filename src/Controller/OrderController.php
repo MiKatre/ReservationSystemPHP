@@ -34,23 +34,10 @@ class OrderController extends AbstractController
     /**
      * @Route("/api/allow_full_day", name="api_allow_full_day", methods={"GET"})
      */
-    public function allowFullDay(SessionInterface $session){
-        date_default_timezone_set('Europe/Paris');
-        $order = $this->getDoctrine()->getManager()
-            ->getRepository(Order::class)
-            ->find($session->get('order')->getId());
-
-        $today = new \DateTime();
-        $today->setTime( 0, 0, 0 );
-
-        $selectedDay =new \DateTime($order->getDate()->format('Ymd'));
-        $selectedDay->setTime( 0, 0, 0 );
-
-        $isToday = $today->getTimestamp() === $selectedDay->getTimestamp();
-
+    public function allowFullDay(SessionInterface $session, DateControl $dateControl){
         return $this->json(array(
-            'allowFullDay' => date('H') < 14,
-        ));
+            'allowFullDay' => $dateControl->allowFullDay($session->get('order')->getDate()),
+        )); 
     }
 
     /**

@@ -29,7 +29,17 @@ class DateControl
         return true;
     }
 
-    public function allowFullDay() {
+    public function allowFullDay(\DateTime $selectedDay) {
+        date_default_timezone_set('Europe/Paris');
 
+        $today = new \DateTime();
+        $today->setTime( 0, 0, 0 );
+
+        $selectedDay =new \DateTime($selectedDay->format('Ymd'));
+        $selectedDay->setTime( 0, 0, 0 );
+
+        $isToday = $today->getTimestamp() === $selectedDay->getTimestamp();
+
+        return (date('H') < 14);
     }
 }
