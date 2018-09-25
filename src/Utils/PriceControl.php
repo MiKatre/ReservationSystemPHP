@@ -43,8 +43,8 @@ class PriceControl
     }
 
     public function getPriceTTC($dateOfBirth, $discount, $isFullDay){
-        $formula = getPiceHT($dateOfBirth, $discount, $isFullDay);
-        $formula->price = $formula->price * PriceControl::TVA + $formula->price;
+        $formula = $this->getPriceHT($dateOfBirth, $discount, $isFullDay);
+        $formula->price =  $formula->price + ($formula->price * PriceControl::TVA);
         return $formula;
     }
 
