@@ -5,40 +5,14 @@ namespace App\Controller;
 use App\Entity\Order;
 use App\Utils\DateControl;
 use App\Utils\ErrorControl;
-use App\Utils\PriceControl;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class OrderController extends AbstractController
 {
-    /**
-     * @Route("/", name="site_homepage")
-     */
-    public function homepage(SessionInterface $session) {
-        $session->start();
-        return $this->render('commande/homepage.html.twig');
-    }
-
-    /**
-     * @Route("/form", name="site_form")
-     */
-    public function showForm(){
-        return $this->render('commande/form.html.twig');
-    }
-
-
-    /**
-     * @Route("/api/allow_full_day", name="api_allow_full_day", methods={"GET"})
-     */
-    public function allowFullDay(SessionInterface $session, DateControl $dateControl){
-        return $this->json(array(
-            'allowFullDay' => $dateControl->allowFullDay($session->get('order')->getDate()),
-        )); 
-    }
 
     /**
      * @Route("/api/create_order", name="api_create_order", methods={"POST"})
