@@ -7,7 +7,6 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 class DefaultControllerTest extends WebTestCase
 {
   public function testHomepage() {
-
     // Test status code
     $client = static::createClient();
     $client->request('GET', '/');
@@ -16,6 +15,6 @@ class DefaultControllerTest extends WebTestCase
     // Check page content
     $crawler = $client->request('GET', '/');
     $this->assertGreaterThan(0, $crawler->filter('html:contains("Billetterie")')->count());
-    
+    $this->assertGreaterThan(0, $crawler->filter('a:contains("Commander")')->count());
   }
 }
