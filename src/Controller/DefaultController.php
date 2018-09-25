@@ -7,7 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
-class OrderController extends AbstractController
+class DefaultController extends AbstractController
 {
     /**
      * @Route("/", name="site_homepage")
