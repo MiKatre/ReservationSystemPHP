@@ -64,7 +64,7 @@ class OrderPlacedSubscriber implements EventSubscriberInterface
         ;
 
         $this->mailer->send($message);
-        // $session->invalidate();
+        $session->invalidate();
     }
 }
 
