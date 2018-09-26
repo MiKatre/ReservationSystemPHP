@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Order;
+use App\Entity\Date;
 use App\Events;
 use App\EventSubscriber\OrderPlacedEvent;
 use App\Utils\ErrorControl;
@@ -59,17 +60,32 @@ class PaiementController extends AbstractController
             'receipt_email' => $session->get('order')->getEmail(),
         ]);
 
-        // $charge->paid === true
-        // $charge->status === 'succeeded'
-        // $charge->outcome->seller_message === 'Payment complete.'
-        if($charge->paid === true) {
-            $order->setIsPaid(true);
-            $entityManager->persist($order);
-            $entityManager->flush();
+        if($charge->paid !== true) {
+            return $errorControl->error(500, 'Erreur lors du paiement.');
         }
+
+        // Increment remaining tickets
+        $remainingTickets = $entityManager->getRepository(Date::class)->findOneBy(
+            ['date' => $order->getDate()]
+        );
+
+        if(empty($remainingTickets)) {
+            $remainingTickets = new Date();
+            $remainingTickets->setDate($order->getDate());
+            $remainingTickets->setNbOfTickets(count($order->getTickets()));
+        } else {
+            $remainingTickets->setNbOfTickets($remainingTickets->getNbOfTickets() + count($order->getTickets()));
+        }
+
+        $order->setIsPaid(true);
+        $entityManager->persist($order);
+        $entityManager->persist($remainingTickets);
+        $entityManager->flush();
 
         $event = new GenericEvent();
         $eventDispatcher->dispatch(Events::ORDER_PLACED, $event);
+
+
 
         return $this->json(array(
             'paid' => $charge->paid,

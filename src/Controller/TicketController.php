@@ -45,20 +45,7 @@ class TicketController extends AbstractController
 
         $order->addTicket($ticket);
 
-        $remainingTickets = $entityManager->getRepository(Date::class)->findOneBy(
-            ['date' => $order->getDate()]
-        );
-
-        if(empty($remainingTickets)) {
-            $remainingTickets = new Date();
-            $remainingTickets->setDate($order->getDate());
-            $remainingTickets->setNbOfTickets(1);
-        } else {
-            $remainingTickets->setNbOfTickets($remainingTickets->getNbOfTickets() + 1);
-        }
-
         $entityManager->persist($order);
-        $entityManager->persist($remainingTickets);
         $entityManager->flush();
 
         $session->set('tickets', $order->getTickets());
@@ -100,9 +87,7 @@ class TicketController extends AbstractController
         }
 
         $data = json_decode($request->getContent());
-
         $entityManager = $this->getDoctrine()->getManager();
-
         $order = $entityManager
             ->getRepository(Order::class)
             ->find($session->get('order')->getId());
@@ -118,19 +103,9 @@ class TicketController extends AbstractController
         if ($ticket === null)
             return $errorControl->error(500, 'Ticket introuvable.');
 
+            
         $order->removeTicket($ticket);
-
-        $remainingTickets = $entityManager->getRepository(Date::class)->findOneBy(
-            ['date' => $order->getDate()]
-        );
-
-        if($remainingTickets->getNbOfTickets() > 0) {
-            $remainingTickets->setNbOfTickets($remainingTickets->getNbOfTickets() - 1);
-        }
-
-        $entityManager->persist($order);
-        $entityManager->persist($remainingTickets);
-        
+        $entityManager->persist($order);        
         $entityManager->flush();
 
         $session->set('tickets', $order->getTickets());
