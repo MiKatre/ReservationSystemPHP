@@ -2,9 +2,9 @@ import React from 'react'
 
 import Cart from './Cart'
 import Counter from './TicketCounter'
-import FormOne from './FormOne'
-import FormTwo from './FormTwo'
-import FormThree from './FormThree'
+import FormOrder from './FormOrder'
+import FormTicket from './FormTicket'
+import FormPaiement from './FormPaiement'
 import Breadcrumb from './Breadcrumb'
 import ThankYou from './ThankYou'
 
@@ -28,9 +28,9 @@ export default class FormContainer extends React.Component {
       isDisabled: false,
       tickets: [],
       reservationCode: undefined,
-      isFormOneCompleted: false,
-      isFormTwoCompleted: false,
-      isFormThreeCompleted: false,
+      isFormOrderCompleted: false,
+      isFormTicketCompleted: false,
+      isFormPaiementCompleted: false,
       showForm: 1, 
       loading: false,
     }
@@ -42,11 +42,11 @@ export default class FormContainer extends React.Component {
     this.handleTicketAdd = this.handleTicketAdd.bind(this);
     this.handleRemoveTicket = this.handleRemoveTicket.bind(this);
 
-    this.handleSubmitFormTwo = this.handleSubmitFormTwo.bind(this);
+    this.handleSubmitFormTicket = this.handleSubmitFormTicket.bind(this);
     this.showForm = this.showForm.bind(this);
     this.getTickets = this.getTickets.bind(this);
 
-    this.handleSubmitFormThree = this.handleSubmitFormThree.bind(this);
+    this.handleSubmitFormPaiement = this.handleSubmitFormPaiement.bind(this);
   }
 
   componentDidUpdate(){
@@ -92,7 +92,7 @@ export default class FormContainer extends React.Component {
     }
     message.success(result.message)
     this.setState({ 
-      isFormOneCompleted: true,
+      isFormOrderCompleted: true,
       loading: false,
       showForm: this.state.showForm + 1,
       reservationCode: result.reservationCode,
@@ -135,9 +135,9 @@ export default class FormContainer extends React.Component {
 
   // FORM 2
 
-  handleSubmitFormTwo(){
+  handleSubmitFormTicket(){
     this.setState({ 
-      isFormTwoCompleted: true,
+      isFormTicketCompleted: true,
       showForm: this.state.showForm + 1,
     })
   }
@@ -196,10 +196,10 @@ export default class FormContainer extends React.Component {
 
     // FORM 3
 
-    handleSubmitFormThree(responseMessage) {
+    handleSubmitFormPaiement(responseMessage) {
       message.success(responseMessage)
       this.setState({
-        isFormThreeCompleted: true,
+        isFormPaiementCompleted: true,
       })
     }
 
@@ -210,7 +210,7 @@ export default class FormContainer extends React.Component {
     const counter = this.state.selectedDay ? <Counter date={this.state.selectedDay} /> : null;
     
     if (this.state.showForm === 1) {
-      form = <FormOne
+      form = <FormOrder
         handleSubmit={this.handleSubmit}
         handleInputChange={this.handleInputChange}
         handleDayChange={this.handleDayChange}
@@ -219,12 +219,12 @@ export default class FormContainer extends React.Component {
       />
       show = 1
     } else if (this.state.showForm === 2) {
-      form = <FormTwo {...this.state} handleTicketAdd={this.handleTicketAdd} getTickets={this.getTickets} counter={counter}/>
+      form = <FormTicket {...this.state} handleTicketAdd={this.handleTicketAdd} getTickets={this.getTickets} counter={counter}/>
       show = 2
     } else if (this.state.showForm === 3) {
       form = (
         <StripeProvider apiKey="pk_test_OFwnhpsnI4Xwml5cxOzWH6UX">
-          <FormThree {...this.state} handleSubmit={this.handleSubmitFormThree} setLoading={this.setLoading}/>
+          <FormPaiement {...this.state} handleSubmit={this.handleSubmitFormPaiement} setLoading={this.setLoading}/>
         </StripeProvider>
       )
       show = 3
@@ -232,8 +232,8 @@ export default class FormContainer extends React.Component {
       form = <ThankYou {...this.state} />
     }
 
-    const {isFormOneCompleted, isFormTwoCompleted, isFormThreeCompleted} = this.state
-    if (isFormOneCompleted && isFormTwoCompleted && isFormThreeCompleted) {
+    const {isFormOrderCompleted, isFormTicketCompleted, isFormPaiementCompleted} = this.state
+    if (isFormOrderCompleted && isFormTicketCompleted && isFormPaiementCompleted) {
       return <ThankYou {...this.state}/>
     } else {
       return (
@@ -250,7 +250,7 @@ export default class FormContainer extends React.Component {
                 TVA={this.state.TVA}
                 />
                 <div className="text-center">
-                    <Button type="primary" disabled={this.state.tickets.length === 0} onClick={this.handleSubmitFormTwo} > Commander &#8594;</Button>
+                    <Button type="primary" disabled={this.state.tickets.length === 0} onClick={this.handleSubmitFormTicket} > Commander &#8594;</Button>
                 </div>
               </Col>
             

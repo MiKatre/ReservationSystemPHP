@@ -20,7 +20,7 @@ const isHoliday = (day) => {
 	return day.getDate() === 25 && day.getMonth() === 11 || day.getDate() === 1 && day.getMonth() === 10 || day.getDate() === 1 && day.getMonth() === 4;
 }
 
-const FormOne = (props) => {
+const FormOrder = (props) => {
 	const isEnabled =
 	props.emailError === false &&
 	props.firstNameError === false &&
@@ -84,4 +84,4 @@ const FormOne = (props) => {
 )
 }
 
-export default FormOne
+export default FormOrder

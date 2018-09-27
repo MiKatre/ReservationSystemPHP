@@ -26,7 +26,7 @@ const CalendarAnim = posed.div({
   exit: {scale: 0}
 });
 
-class FormTwo extends React.Component {
+class FormTicket extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
@@ -204,4 +204,4 @@ class FormTwo extends React.Component {
 		)
 	}
 }
-export default FormTwo
+export default FormTicket
