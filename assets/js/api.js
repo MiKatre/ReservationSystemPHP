@@ -1,4 +1,4 @@
-const root = 'http://localhost:8888/projet4/public/api/'
+import {root} from './config'
 
 export const handleOrder = async (order) => {
   try {
