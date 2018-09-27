@@ -49,26 +49,9 @@ export default class FormContainer extends React.Component {
     this.handleSubmitFormPaiement = this.handleSubmitFormPaiement.bind(this);
   }
 
-  componentDidUpdate(){
-    // this.getSessionData()
-    // console.log(this.state.showForm)
-  }
-
-  componentDidMount() {
-
-  }
-
   setLoading(isLoading) {
     this.setState({loading: isLoading})
   }
-
-
-  // async getSessionData(){
-  //   const data = await fetchSessionData()
-  //   this.setState({
-  //     ...data,
-  //   })
-  // }
 
   async handleSubmit(event) {
     event.preventDefault();
@@ -184,14 +167,6 @@ export default class FormContainer extends React.Component {
       return
     }
     message.error('Impossible de supprimer ce billet')
-
-    // let {tickets} = this.state
-    // const index = tickets.findIndex(i => i.id === id)
-    // if (index > -1) {
-    //   tickets.splice(index, 1)
-    //   this.setState({tickets: tickets})
-    //   message.success('Billet supprimé');
-    // }
   }
 
     // FORM 3

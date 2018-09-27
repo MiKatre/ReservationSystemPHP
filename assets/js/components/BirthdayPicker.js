@@ -79,33 +79,3 @@ export default class Example extends React.Component {
     );
   }
 }
-
-
-
-
-
-
-
-{/* <DayPickerInput
-    className="form-control"
-    formatDate={formatDate}
-    parseDate={parseDate}
-    format="LL"
-    placeholder={`${formatDate(new Date(), 'LL', 'fr')}`}
-    invalid
-    dayPickerProps={{
-      month:this.state.month,
-      fromMonth: fromMonth,
-      toMonth: toMonth,
-      formatDate: formatDate,
-      locale: 'fr',
-      localeUtils: MomentLocaleUtils,
-      captionElement: ({ date, localeUtils }) => (
-        <YearMonthForm
-        date={date}
-          localeUtils={localeUtils}
-          onChange={this.handleYearMonthChange}
-        />
-      )
-    }}
-  /> */}

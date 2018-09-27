@@ -1,14 +1,9 @@
 import React from 'react'
 import { Popconfirm } from 'antd';
-import {getRate} from '../helpers'
 
 const Cart = ({tickets, handleRemoveTicket, totalTTC = 0, totalHT = 0, TVA = 0.2}) => {
 
-	let total = 0
-
 	const ticketList = tickets.map(ticket => {
-		const rate = getRate(ticket.birthday)
-		total += rate.price / 100
 		const formula = ticket.isFullDay ? 'Journée complète' : 'Demi-journée'
 		return (
 			<Ticket 
@@ -72,19 +67,5 @@ const Ticket = props => (
 			<span className="text-muted">{props.price}€</span>
 		</div>
 	</li>
-
 );
-	// <li className="list-group-item d-flex justify-content-between bg-light">
-	// 	<div className="text-success">
-	// 		<h6 className="my-0">Réduction</h6>
-	// 		<small>Document à présenter à l'accueil</small>
-	// 	</div>
-	// 	<span className="text-success">-5€</span>
-	// </li>
-	// <li className="list-group-item d-flex justify-content-between">
-	// 	<span>Total (EUR)</span>
-	// 	<strong>20€</strong>
-	// </li>
-
-
 export default Cart
