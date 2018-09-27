@@ -16,20 +16,23 @@ class DateControl
         $today->setTime( 0, 0, 0 );
         $now->setTime( 0, 0, 0 );
 
-        // If past day
-        if($today < $now)
-            return false;
-        // If Saturday or Sunday
-        if($dayOfWeek === 2 || $dayOfWeek === 0)
-            return false;
-        // 25 décembre
-        if(($dayOfMonth === 25) && ($month === 12))
-            return false;
-        //1er novembre ou 1er mai
-        if(($dayOfMonth === 1) && ($dayOfMonth === 11 || $dayOfMonth === 12))
-            return false;
+        $invalidDates = array(
+            'today' => $today < $now,
+            'tuesday' => $dayOfWeek === 2,
+            'sunday' => $dayOfWeek === 0,
+            'christmas' => (($dayOfMonth === 25) && ($month === 12)),
+            'firstOfNovember' => (($dayOfMonth === 1) && ($month === 11)),
+            'firstOfMay' => (($dayOfMonth === 1) && ($month === 5)),
+        );
 
-        return true;
+        $isDayValid = true;
+
+        foreach($invalidDates as $invalidDate) {
+            if ((bool) $invalidDate) 
+                $isDayValid = false;
+        }
+
+        return $isDayValid;
     }
 
     public function allowFullDay(\DateTime $selectedDay) {
