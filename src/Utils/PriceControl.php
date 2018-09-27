@@ -4,15 +4,29 @@ namespace App\Utils;
 
 use App\Entity\Ticket;
 
+/**
+ * Class PriceControl
+ * @package App\Utils
+ */
 class PriceControl
 {
     const TVA = 20 / 100;
 
+    /**
+     * @param $dateOfBirth
+     * @return int
+     */
     private function getAge($dateOfBirth) {
         $diff = $dateOfBirth->diff(new \DateTime());
         return (int) ($diff->format('%y'));
     }
 
+    /**
+     * @param $dateOfBirth
+     * @param $discount
+     * @param $isFullDay
+     * @return object
+     */
     public function getPriceHT($dateOfBirth, $discount, $isFullDay){
         $age = (int) $this->getAge($dateOfBirth);
 
@@ -42,12 +56,22 @@ class PriceControl
         return $formula;
     }
 
+    /**
+     * @param $dateOfBirth
+     * @param $discount
+     * @param $isFullDay
+     * @return object
+     */
     public function getPriceTTC($dateOfBirth, $discount, $isFullDay){
         $formula = $this->getPriceHT($dateOfBirth, $discount, $isFullDay);
         $formula->price =  $formula->price + ($formula->price * PriceControl::TVA);
         return $formula;
     }
 
+    /**
+     * @param $tickets
+     * @return int
+     */
     public function getTotalHT($tickets) {
         $amount = 0;
         foreach($tickets as $ticket) {
@@ -56,6 +80,10 @@ class PriceControl
         return $amount;
     }
 
+    /**
+     * @param $tickets
+     * @return float|int
+     */
     public function getTotalTTC($tickets) {
         $amount = $this->getTotalHT($tickets);
         return ($amount * PriceControl::TVA + $amount) ;

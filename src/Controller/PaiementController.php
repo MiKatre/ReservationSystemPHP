@@ -21,6 +21,14 @@ use Symfony\Component\Routing\Annotation\Route;
 class PaiementController extends AbstractController
 {
     /**
+     * @param Request $request
+     * @param SessionInterface $session
+     * @param \Swift_Mailer $mailer
+     * @param PriceControl $price
+     * @param ErrorControl $errorControl
+     * @param EventDispatcherInterface $eventDispatcher
+     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
+     *
      * @Route("/api/pay", name="api_pay", methods={"POST"})
      */
     public function pay(Request $request, SessionInterface $session, \Swift_Mailer $mailer, PriceControl $price, ErrorControl $errorControl, EventDispatcherInterface $eventDispatcher){

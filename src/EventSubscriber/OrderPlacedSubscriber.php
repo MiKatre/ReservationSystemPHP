@@ -8,9 +8,10 @@ use App\Utils\PriceControl;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+
 /**
- * Envoi un mail de bienvenue à chaque creation d'un utilisateur
- *
+ * Class OrderPlacedSubscriber
+ * @package App\EventSubscriber
  */
 class OrderPlacedSubscriber implements EventSubscriberInterface
 {
@@ -19,6 +20,13 @@ class OrderPlacedSubscriber implements EventSubscriberInterface
     private $price;
     private $templating;
 
+    /**
+     * OrderPlacedSubscriber constructor.
+     * @param \Swift_Mailer $mailer
+     * @param SessionInterface $session
+     * @param PriceControl $price
+     * @param \Twig_Environment $templating
+     */
     public function __construct(\Swift_Mailer $mailer, SessionInterface $session, PriceControl $price, \Twig_Environment $templating)
     {
         // On injecte notre expediteur et la classe pour envoyer des mails
@@ -28,6 +36,9 @@ class OrderPlacedSubscriber implements EventSubscriberInterface
         $this->templating = $templating;
     }
 
+    /**
+     * @return array
+     */
     public static function getSubscribedEvents(): array
     {
         return [
@@ -36,6 +47,12 @@ class OrderPlacedSubscriber implements EventSubscriberInterface
         ];
     }
 
+    /**
+     * @param GenericEvent $event
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
+     */
     public function onOrderPlaced(GenericEvent $event): void
     {
         $session =  $this->session;

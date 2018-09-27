@@ -5,6 +5,10 @@ namespace App\Utils;
 class DateControl
 {
     // Check if the date in the future, when the museum is open.
+    /**
+     * @param \DateTime $date
+     * @return bool
+     */
     public function isDateValid(\DateTime $date){
         date_default_timezone_set('Europe/Paris');
         $dayOfWeek = (int) $date->format('w');  // 0 for sunday -> 6 for saturday
@@ -35,6 +39,10 @@ class DateControl
         return $isDayValid;
     }
 
+    /**
+     * @param \DateTime $selectedDay
+     * @return bool
+     */
     public function allowFullDay(\DateTime $selectedDay) {
         date_default_timezone_set('Europe/Paris');
 

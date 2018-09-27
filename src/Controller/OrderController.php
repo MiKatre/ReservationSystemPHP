@@ -15,7 +15,15 @@ class OrderController extends AbstractController
 {
 
     /**
-     * @Route("/api/create_order", name="api_create_order", methods={"POST"})
+     * @param Request $request
+     * @param ValidatorInterface $validator
+     * @param SessionInterface $session
+     * @param DateControl $dateControl
+     * @param ErrorControl $errorControl
+     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
+     * @throws \Exception
+     *
+     *  @Route("/api/create_order", name="api_create_order", methods={"POST"})
      */
     public function createOrder(Request $request, ValidatorInterface $validator, SessionInterface $session, DateControl $dateControl, ErrorControl $errorControl) {
 

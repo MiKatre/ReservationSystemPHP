@@ -10,6 +10,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class DefaultController extends AbstractController
 {
     /**
+     * @param SessionInterface $session
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
      * @Route("/", name="site_homepage")
      */
     public function homepage(SessionInterface $session) {
@@ -18,6 +21,8 @@ class DefaultController extends AbstractController
     }
 
     /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
      * @Route("/form", name="site_form")
      */
     public function showForm(){
@@ -26,6 +31,10 @@ class DefaultController extends AbstractController
 
 
     /**
+     * @param SessionInterface $session
+     * @param DateControl $dateControl
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     *
      * @Route("/api/allow_full_day", name="api_allow_full_day", methods={"GET"})
      */
     public function allowFullDay(SessionInterface $session, DateControl $dateControl){

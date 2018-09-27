@@ -13,9 +13,20 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Class TicketController
+ * @package App\Controller
+ */
 class TicketController extends AbstractController
 {
     /**
+     * @param Request $request
+     * @param ValidatorInterface $validator
+     * @param SessionInterface $session
+     * @param PriceControl $price
+     * @param ErrorControl $errorControl
+     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
+     *
      * @Route("/api/add_ticket", name="api_add_ticket", methods={"POST"})
      */
     public function addTicket(Request $request, ValidatorInterface $validator, SessionInterface $session, PriceControl $price, ErrorControl $errorControl){
@@ -78,6 +89,11 @@ class TicketController extends AbstractController
 
 
     /**
+     * @param Request $request
+     * @param SessionInterface $session
+     * @param ErrorControl $errorControl
+     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
+     *
      * @Route("/api/remove_ticket", name="api_remove_ticket", methods={"DELETE"})
      */
     public function removeTicket(Request $request, SessionInterface $session, ErrorControl $errorControl) {
@@ -117,6 +133,10 @@ class TicketController extends AbstractController
     }
 
     /**
+     * @param SessionInterface $session
+     * @param PriceControl $price
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     *
      * @Route("/api/get_tickets", name="api_get_tickets", methods={"GET"})
      */
     public function getTickets(SessionInterface $session, PriceControl $price) {
@@ -150,6 +170,10 @@ class TicketController extends AbstractController
     }
 
     /**
+     * @param Request $request
+     * @param ErrorControl $errorControl
+     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
+     *
      * @Route("/api/get_remaining_tickets", name="api_get_remaining_tickets", methods={"GET"})
      */
     public function remainingTickets(Request $request, ErrorControl $errorControl) {
