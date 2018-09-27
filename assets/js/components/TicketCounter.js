@@ -12,9 +12,13 @@ export default class TicketCounter extends React.Component {
   }
   componentDidMount() {
     this.getRemainingTickets()
-    setInterval(() => {
-      this.getRemainingTickets()
-    }, 5000)
+    // setInterval(() => {
+    //   this.getRemainingTickets()
+    // }, 5000)
+  }
+
+  componentDidUpdate(){
+    this.getRemainingTickets()
   }
 
   async getRemainingTickets() {
@@ -61,5 +65,3 @@ export default class TicketCounter extends React.Component {
     }
   }
 };
-
-// {/* <Progress type="circle" percent={100} format={() => 'Done'} /> */}
