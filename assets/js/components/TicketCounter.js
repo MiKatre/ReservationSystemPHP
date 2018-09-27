@@ -12,14 +12,15 @@ export default class TicketCounter extends React.Component {
   }
   componentDidMount() {
     this.getRemainingTickets()
-    // setInterval(() => {
-    //   this.getRemainingTickets()
-    // }, 5000)
+    this.interval = setInterval(() => {
+      this.getRemainingTickets()
+    }, 5000)
   }
 
-  componentDidUpdate(){
-    this.getRemainingTickets()
+  componentWillUnmount(){
+    clearInterval(this.interval)
   }
+
 
   async getRemainingTickets() {
     const {date} = this.props
