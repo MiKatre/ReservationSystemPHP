@@ -17,13 +17,13 @@ class PriceControl
         $age = (int) $this->getAge($dateOfBirth);
 
         // à partir de 12 ans
-        $normal = (object) ['price' => Ticket::NORMAL_PRICE, 'name' => 'Normal'];
+        $normal = (object) ['price' => Ticket::NORMAL_PRICE_HT, 'name' => 'Normal'];
         // de 4 à 12 ans
-        $children = (object) ['price' => Ticket::CHILDREN_PRICE, 'name' => 'Enfant'];
+        $children = (object) ['price' => Ticket::CHILDREN_PRICE_HT, 'name' => 'Enfant'];
         // à partir de 60 ans
-        $senior = (object) ['price' => Ticket::SENIOR_PRICE, 'name' => 'Senior'];
+        $senior = (object) ['price' => Ticket::SENIOR_PRICE_HT, 'name' => 'Senior'];
         // Moins de 4 ans
-        $baby = (object) ['price' => Ticket::BABY_PRICE, 'name' => 'Enfant'];
+        $baby = (object) ['price' => Ticket::BABY_PRICE_HT, 'name' => 'Enfant'];
 
         if ($age >= 4 && $age <= 12)
             $formula = $children;

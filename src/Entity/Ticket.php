@@ -10,10 +10,10 @@ use Doctrine\ORM\Mapping as ORM;
 class Ticket
 {
 
-    const CHILDREN_PRICE = 800;
-    const NORMAL_PRICE = 1600;
-    const SENIOR_PRICE = 1200;
-    const BABY_PRICE = 0;
+    const CHILDREN_PRICE_HT = 800;
+    const NORMAL_PRICE_HT = 1600;
+    const SENIOR_PRICE_HT = 1200;
+    const BABY_PRICE_HT = 0;
     const DISCOUNT_PERCENT = 0.1;
     const HALF_DAY_DISCOUNT_PERCENT = 0.5;
 
