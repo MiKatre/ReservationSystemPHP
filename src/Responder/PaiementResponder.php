@@ -18,8 +18,8 @@ class PaiementResponder
   }
 
   /**
-   * @param Order $order
-   * @return JsonResponse
+   * @param $result
+   * @return JsonResponse|\Symfony\Component\HttpFoundation\Response
    */
   public function paidRes($result)
   {

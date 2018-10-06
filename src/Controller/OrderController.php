@@ -17,6 +17,8 @@ class OrderController extends AbstractController
      * @param Request $request
      * @param DateControl $dateControl
      * @param ErrorControl $errorControl
+     * @param OrderService $orderService
+     * @param OrderResponder $orderResponder
      * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      *

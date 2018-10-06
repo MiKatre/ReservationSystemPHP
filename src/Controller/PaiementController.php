@@ -19,8 +19,7 @@ class PaiementController extends AbstractController
      * @param ErrorControl $errorControl
      * @param PaiementService $paiementService
      * @param PaiementResponder $paiementResponder
-     * @return \Symfony\Component\HttpFoundation\Response
-     * @throws \Exception
+     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
      *
      * @Route("/api/pay", name="api_pay", methods={"POST"})
      */

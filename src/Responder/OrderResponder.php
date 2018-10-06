@@ -15,7 +15,7 @@ class OrderResponder
   }
 
   /**
-   * @param Order $order
+   * @param $result
    * @return JsonResponse
    */
   public function createOrderRes($result)

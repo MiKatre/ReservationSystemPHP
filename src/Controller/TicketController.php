@@ -22,6 +22,8 @@ class TicketController extends AbstractController
     /**
      * @param Request $request
      * @param ErrorControl $errorControl
+     * @param TicketService $ticketService
+     * @param TicketResponder $ticketResponder
      * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
      *
      * @Route("/api/add_ticket", name="api_add_ticket", methods={"POST"})
@@ -41,9 +43,10 @@ class TicketController extends AbstractController
 
     /**
      * @param Request $request
-     * @param SessionInterface $session
      * @param ErrorControl $errorControl
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
+     * @param TicketService $ticketService
+     * @param TicketResponder $ticketResponder
+     * @return bool|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
      *
      * @Route("/api/remove_ticket", name="api_remove_ticket", methods={"DELETE"})
      */
@@ -67,7 +70,7 @@ class TicketController extends AbstractController
 
     /**
      * @param SessionInterface $session
-     * @param PriceControl $price
+     * @param TicketResponder $ticketResponder
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      *
      * @Route("/api/get_tickets", name="api_get_tickets", methods={"GET"})
@@ -84,6 +87,8 @@ class TicketController extends AbstractController
     /**
      * @param Request $request
      * @param ErrorControl $errorControl
+     * @param TicketResponder $ticketResponder
+     * @param TicketService $ticketService
      * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
      *
      * @Route("/api/get_remaining_tickets", name="api_get_remaining_tickets", methods={"GET"})

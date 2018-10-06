@@ -23,6 +23,10 @@ class TicketService
         $this->errorControl = $errorControl;
     }
 
+    /**
+     * @param $data
+     * @return Ticket
+     */
     private function hydrate($data){
         
         $dateOfBirth = new \DateTime($data->dateOfBirth);
@@ -39,6 +43,10 @@ class TicketService
         return $ticket;
     }
 
+    /**
+     * @param $data
+     * @return Order|null|object
+     */
     public function addTicketToOrder($data)
     {
         $order = $this->em
@@ -57,6 +65,10 @@ class TicketService
         return $order;
     }
 
+    /**
+     * @param $data
+     * @return bool|\Symfony\Component\HttpFoundation\Response
+     */
     public function remove($data)
     {
         $order = $this->em
@@ -83,6 +95,10 @@ class TicketService
         return true;
     }
 
+    /**
+     * @param $date
+     * @return object
+     */
     public function remaining($date){
         $dateObject = new \DateTime($date);
         $normalizedDate = $dateObject->format('d/m/Y');

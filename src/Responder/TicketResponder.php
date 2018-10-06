@@ -14,10 +14,10 @@ class TicketResponder
     $this->price = $price;
   }
 
-    /**
-     * @param Order $order
-     * @return JsonResponse
-     */
+  /**
+   * @param Order $order
+   * @return JsonResponse
+   */
   public function addTicketRes(Order $order)
   {
     $tickets = [];
@@ -48,6 +48,10 @@ class TicketResponder
     return $response;
   }
 
+  /**
+   * @param Order $order
+   * @return JsonResponse
+   */
   public function getTicketsRes(Order $order){
       $tickets = [];
 
@@ -76,6 +80,10 @@ class TicketResponder
       return $response;
   }
 
+  /**
+   * @param $remaining
+   * @return JsonResponse
+   */
   public function remainingTicketsRes($remaining){
       $response = new JsonResponse(array(
           'success' => true,
@@ -85,6 +93,9 @@ class TicketResponder
       return $response;
   }
 
+  /**
+   * @return JsonResponse
+   */
   public function removeTicketRes(){
       $response = new JsonResponse(array(
           'success' => true,
