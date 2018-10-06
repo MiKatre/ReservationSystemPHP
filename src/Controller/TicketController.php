@@ -3,8 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Order;
-use App\Entity\Ticket;
-use App\Entity\Date;
 use App\Utils\ErrorControl;
 use App\Utils\PriceControl;
 use App\Utils\TicketService;
@@ -12,9 +10,8 @@ use App\Utils\DateControl;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Responders\TicketResponder;
+use App\Responder\TicketResponder;
 
 /**
  * Class TicketController

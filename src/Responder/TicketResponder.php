@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Responders;
+namespace App\Responder;
 
 use App\Entity\Order;
 use App\Utils\PriceControl;
