@@ -7,11 +7,14 @@ use App\Entity\Ticket;
 use App\Entity\Date;
 use App\Utils\ErrorControl;
 use App\Utils\PriceControl;
+use App\Utils\TicketService;
+use App\Utils\DateControl;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Responders\TicketResponder;
 
 /**
  * Class TicketController
@@ -21,70 +24,21 @@ class TicketController extends AbstractController
 {
     /**
      * @param Request $request
-     * @param ValidatorInterface $validator
-     * @param SessionInterface $session
-     * @param PriceControl $price
      * @param ErrorControl $errorControl
      * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
      *
      * @Route("/api/add_ticket", name="api_add_ticket", methods={"POST"})
      */
-    public function addTicket(Request $request, ValidatorInterface $validator, SessionInterface $session, PriceControl $price, ErrorControl $errorControl){
+    public function addTicket(Request $request, ErrorControl $errorControl, TicketService $ticketService, TicketResponder $ticketResponder){
         // Return errorMessage or success message with the id
 
         if ($request->getContentType() != 'json' || !$request->getContent())
             return $errorControl->error(500, 'Mauvais format de données. JSON attendu.');
 
         $data = json_decode($request->getContent());
+        $order = $ticketService->addTicketToOrder($data);
 
-        $entityManager = $this->getDoctrine()->getManager();
-
-        $order = $entityManager
-            ->getRepository(Order::class)
-            ->find($session->get('order')->getId());
-
-        $dateOfBirth = new \DateTime($data->dateOfBirth);
-
-        $ticket = new Ticket();
-        $ticket->setFirstName($data->firstName);
-        $ticket->setLastName($data->lastName);
-        $ticket->setDateOfBirth($dateOfBirth);
-        $ticket->setDiscount($data->discount);
-        $ticket->setPrice($price->getPriceHT($dateOfBirth, $data->discount, $data->isFullDay )->price);
-        $ticket->setIsFullDay($data->isFullDay);
-        $ticket->setCountry($data->country);
-
-        $order->addTicket($ticket);
-
-        $entityManager->persist($order);
-        $entityManager->flush();
-
-        $session->set('tickets', $order->getTickets());
-
-        $tickets = [];
-
-        foreach ($order->getTickets() as $singleTicket){
-            $dateOfBirth = $singleTicket->getDateOfBirth();
-            $object = (object) [
-                'id' => $singleTicket->getId(),
-                'firstName' => $singleTicket->getFirstName(),
-                'lastName' => $singleTicket->getLastName(),
-                'dateOfBirth' => $dateOfBirth,
-                'price' => $price->getPriceHT($dateOfBirth, $singleTicket->getDiscount(), $singleTicket->getIsFullDay())->price,
-                'priceName' => $price->getPriceHT($dateOfBirth, $singleTicket->getDiscount(), $singleTicket->getIsFullDay())->name,
-                'isFullDay' => $singleTicket->getIsFullDay(),
-            ];
-            $tickets[] = $object;
-        }
-
-        return $this->json(array(
-            'success' => true,
-            'tickets' => $tickets,
-            'totalHT' => $price->getTotalHT($order->getTickets()),
-            'totalTTC' => $price->getTotalTTC($order->getTickets()),
-            'TVA' => PriceControl::TVA,
-            'message' => 'Billet ajouté',
-        ));
+        return $ticketResponder->addTicketRes($order);
     }
 
 
@@ -96,40 +50,22 @@ class TicketController extends AbstractController
      *
      * @Route("/api/remove_ticket", name="api_remove_ticket", methods={"DELETE"})
      */
-    public function removeTicket(Request $request, SessionInterface $session, ErrorControl $errorControl) {
+    public function removeTicket(Request $request, ErrorControl $errorControl, TicketService $ticketService, TicketResponder $ticketResponder) {
 
         if ($request->getContentType() != 'json' || !$request->getContent()) {
             return $errorControl->error(500, 'Mauvais format de données. JSON attendu.');
         }
 
         $data = json_decode($request->getContent());
-        $entityManager = $this->getDoctrine()->getManager();
-        $order = $entityManager
-            ->getRepository(Order::class)
-            ->find($session->get('order')->getId());
 
-        $ticket = null;
+        // Return true or HTTP Response object
+        $isTicketRemoved = $ticketService->remove($data);
 
-        foreach ($order->getTickets() as $singleTicket){
-            if ($singleTicket->getId() === $data->id) {
-                $ticket = $singleTicket;
-            }
-        }
+        //
+        if (!$isTicketRemoved)
+            return $isTicketRemoved;
 
-        if ($ticket === null)
-            return $errorControl->error(500, 'Ticket introuvable.');
-
-            
-        $order->removeTicket($ticket);
-        $entityManager->persist($order);        
-        $entityManager->flush();
-
-        $session->set('tickets', $order->getTickets());
-
-        return $this->json(array(
-            'success' => true,
-            'message' => 'Billet supprimé',
-        ));
+        return $ticketResponder->removeTicketRes();
     }
 
     /**
@@ -139,34 +75,13 @@ class TicketController extends AbstractController
      *
      * @Route("/api/get_tickets", name="api_get_tickets", methods={"GET"})
      */
-    public function getTickets(SessionInterface $session, PriceControl $price) {
+    public function getTickets(SessionInterface $session, TicketResponder $ticketResponder) {
         $entityManager = $this->getDoctrine()->getManager();
         $order = $entityManager
             ->getRepository(Order::class)
             ->find($session->get('order')->getId());
 
-        $tickets = [];
-
-        foreach ($order->getTickets() as $singleTicket){
-            $dateOfBirth = $singleTicket->getDateOfBirth();
-            $object = (object) [
-                'id' => $singleTicket->getId(),
-                'firstName' => $singleTicket->getFirstName(),
-                'lastName' => $singleTicket->getLastName(),
-                'dateOfBirth' => $dateOfBirth,
-                'price' => $price->getPriceHT($dateOfBirth, $singleTicket->getDiscount(), $singleTicket->getIsFullDay())->price,
-                'priceName' => $price->getPriceHT($dateOfBirth, $singleTicket->getDiscount(), $singleTicket->getIsFullDay())->name,
-                'isFullDay' => $singleTicket->getIsFullDay(),
-            ];
-            $tickets[] = $object;
-        }
-        return $this->json(array(
-            'success' => true,
-            'tickets' => $tickets,
-            'totalHT' => $price->getTotalHT($order->getTickets()),
-            'totalTTC' => $price->getTotalTTC($order->getTickets()),
-            'TVA' => PriceControl::TVA,
-        ));
+        return $ticketResponder->getTicketsRes($order);
     }
 
     /**
@@ -176,33 +91,27 @@ class TicketController extends AbstractController
      *
      * @Route("/api/get_remaining_tickets", name="api_get_remaining_tickets", methods={"GET"})
      */
-    public function remainingTickets(Request $request, ErrorControl $errorControl) {
+    public function remainingTickets(Request $request, ErrorControl $errorControl, TicketResponder $ticketResponder, TicketService $ticketService) {
 
         $date = $request->query->get('date');
-
-        if (!$date) {
+        if (!$date)
             return $errorControl->error(500, 'Date attendue.');
-        }
 
-        $dateObject = new \DateTime($date);
+        $remaining = $ticketService->remaining($date);
 
-        $normalizedDate = $dateObject->format('d/m/Y');
+        return $ticketResponder->remainingTicketsRes($remaining);
+    }
 
-        $entityManager = $this->getDoctrine()->getManager();
-
-        $entity = $entityManager->getRepository(Date::class)->findOneBy(
-            ['date' => $dateObject]
-        );
-
-        $remaining = Date::MAX_TICKETS_PER_DAY;
-        if(!empty($entity)) {
-            $remaining = Date::MAX_TICKETS_PER_DAY - $entity->getNbOfTickets();
-        }
-
+    /**
+     * @param SessionInterface $session
+     * @param DateControl $dateControl
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     *
+     * @Route("/api/allow_full_day", name="api_allow_full_day", methods={"GET"})
+     */
+    public function allowFullDay(SessionInterface $session, DateControl $dateControl){
         return $this->json(array(
-            'success' => true,
-            'message' => 'X Billets restants le ' . $normalizedDate,
-            'remaining' => $remaining,
+            'allowFullDay' => $dateControl->allowFullDay($session->get('order')->getDate()),
         ));
     }
 

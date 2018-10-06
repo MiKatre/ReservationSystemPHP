@@ -28,7 +28,7 @@ class OrderController extends AbstractController
     public function createOrder(Request $request, ValidatorInterface $validator, SessionInterface $session, DateControl $dateControl, ErrorControl $errorControl) {
 
        if ($request->getContentType() != 'json' || !$request->getContent())
-           return $errorControl->error(500, 'Mauvais format de données. JSON attendu.');
+           return $errorControl->error(400, 'Mauvais format de données. JSON attendu.');
 
         $data = json_decode($request->getContent());
         $entityManager = $this->getDoctrine()->getManager();
