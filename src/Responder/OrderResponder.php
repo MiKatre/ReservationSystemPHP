@@ -26,6 +26,7 @@ class OrderResponder
       $response = new JsonResponse(array(
         'success' => true,
         'message' =>  $result->message,
+        'reservationCode' => $result->reservationCode,
       ));
     return $response;
   }

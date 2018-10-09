@@ -79,7 +79,7 @@ class OrderService
     $message = $this->session->has('order') ? 'Commande mise à jour' : 'Commande créée' ;
     $this->session->set('order', $order);
 
-    $response = (object) ['error' => false, 'message' => $message];
+    $response = (object) ['error' => false, 'message' => $message, 'reservationCode' => $order->getReservationCode()];
     return $response;
   }
 }
