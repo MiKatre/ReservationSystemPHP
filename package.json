@@ -5,9 +5,12 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-stage-3": "^6.24.1",
     "css-loader": "^1.0.0",
+    "faker": "^4.1.0",
     "jest": "^23.6.0",
+    "jest-cli": "^23.6.0",
     "less": "^3.8.1",
     "less-loader": "^4.1.0",
+    "puppeteer": "^1.10.0",
     "style-loader": "^0.23.0",
     "webpack-notifier": "^1.6.0"
   },
@@ -17,7 +20,8 @@
     "dev-server": "encore dev-server",
     "dev": "encore dev",
     "watch": "encore dev --watch",
-    "build": "encore production"
+    "build": "encore production",
+    "test": "jest"
   },
   "dependencies": {
     "antd": "^3.9.1",
