@@ -157,6 +157,7 @@ class FormTicket extends React.Component {
 									placeholder="Date de naissance" 
 									value={date} 
 									className="mb-3" 
+									name="birthDate"
 									onClick={this.handleBirthdayFieldClick} 
 									 />
 
@@ -165,6 +166,7 @@ class FormTicket extends React.Component {
 									style={{ width: 200 }}
 									dataSource={countryListFr}
 									placeholder="Pays"
+									className="country" 
 									filterOption={(inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
 									value={this.state.country}
 									onChange={this.handleCountryChange}

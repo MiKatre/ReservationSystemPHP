@@ -11,7 +11,7 @@ const ThankYou = props => {
           <div className="mr-sm-4 text-center">
             <Icon type="check-circle" theme="twoTone" twoToneColor="#52c41a" style={{ fontSize: '40px' }}/>
           </div>
-          <div>
+          <div id="thank-you-message">
             <h2>Merci pour votre commande !</h2>
             <p>Une commande a été passée au nom de <strong>{props.firstName} {props.lastName}</strong></p>
             <p>Votre code de réservation est <strong>{props.reservationCode}</strong></p>
