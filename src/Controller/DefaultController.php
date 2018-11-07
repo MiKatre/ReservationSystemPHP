@@ -15,8 +15,10 @@ class DefaultController extends AbstractController
      *
      * @Route("/", name="site_homepage")
      */
-    public function homepage(SessionInterface $session) {
+    public function homepage(SessionInterface $session) 
+    {
         $session->start();
+        
         return $this->render('commande/homepage.html.twig');
     }
 
