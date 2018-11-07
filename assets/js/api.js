@@ -114,11 +114,6 @@ export const pay = async token => {
   }
 }
 
-
-
-
-
-
 export const fetchSessionData = async () => {
   try {
     const response = await fetch(`${root}send-session-data`)
